@@ -24,5 +24,6 @@ hs_err_pid*
 /bin/
 *.classpath
 *.project
-/projekat/output/
-/projekat/keyRingCollections/
+*.asc
+/output/
+/keyRingCollections/
