@@ -6,19 +6,18 @@ import java.util.List;
 public class UserProvider {
 
 	private List<User> allUsers = new LinkedList<>();
-	
-	private static String currentUser; // preko ovoga treba da se dohvata objekat korisnika da bi u generateRSAKeys
-	// mogli da dohvatimo njegove podatke pri imenovanju fajlova
 
-	public static String getCurrentUser() {
+	private static UserProvider instance = new UserProvider();
+
+	private User currentUser = new User("kalus", "kurcina@kurcina.com", "superSifra");
+
+	public User getCurrentUser() {
 		return currentUser;
 	}
 
-	public static void setCurrentUser(String currentUser) {
-		UserProvider.currentUser = currentUser;
+	public void setCurrentUser(User currentUser) {
+		this.currentUser = currentUser;
 	}
-
-	private static UserProvider instance = new UserProvider();
 
 	private UserProvider() {
 	}
@@ -31,12 +30,12 @@ public class UserProvider {
 		return allUsers;
 	}
 
-	public boolean createUser(String username, String password) {
+	public boolean createUser(String username, String mail, String password) {
 		if (allUsers.parallelStream().anyMatch((User user) -> {
 			return user.getUsername().equals(username);
 		}))
 			return false;
-		allUsers.add(new User(username, password));
+		allUsers.add(new User(username, mail, password));
 		return true;
 	}
 

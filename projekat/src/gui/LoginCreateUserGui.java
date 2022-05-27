@@ -67,7 +67,6 @@ public class LoginCreateUserGui extends GUI {
 	}
 
 	private void login() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -75,7 +74,7 @@ public class LoginCreateUserGui extends GUI {
 		String uName = username.getText();
 		String pass = password.getText();
 		UserProvider userProvider = UserProvider.getInstance();
-		if (userProvider.createUser(uName, pass)) {
+		if (userProvider.createUser(uName, "Kurcina", pass)) {
 			System.out.println("Uspesno kreiran korisnik");
 			System.out.println(userProvider.getAllUsersAsString());
 		} else {

@@ -2,9 +2,9 @@ package gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.security.KeyPair;
-import java.util.Base64;
-import java.util.Base64.Encoder;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -13,7 +13,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.bouncycastle.openpgp.PGPException;
+import org.bouncycastle.openpgp.PGPKeyPair;
+
 import projekat.GenerateRSAKeys;
+import util.Pair;
 
 public class GenereteKeyPairGUI extends GUI {
 
@@ -71,22 +75,28 @@ public class GenereteKeyPairGUI extends GUI {
 				JButton b = (JButton) e.getSource();
 
 				GenerateRSAKeys generator = GenerateRSAKeys.getInsance();
-				KeyPair pair = generator.generate((Integer) lengthDropDown.getSelectedItem());
-				Encoder b64 = Base64.getEncoder();
-				String nPub = new String(b64.encode(pair.getPublic().getEncoded()));
-				String nPriv = new String(b64.encode(pair.getPrivate().getEncoded()));
-				System.out.println(String.format("public key: %s", nPub));
-				System.out.println(String.format("private key: %s", nPriv));
-				if (nPub.equals(pub)) {
-					System.out.println("Isti javni kljuc");
+				Pair<PGPKeyPair, PGPKeyPair> pair;
+				try {
+					pair = generator.generate((Integer) lengthDropDown.getSelectedItem());
+					((MainGui) getParent()).setInnerPanel((new KeyPairViewGUI(pair, panel, getParent())).getPanel());
+				} catch (NoSuchProviderException | NoSuchAlgorithmException | PGPException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
-				if (nPriv.equals(priv)) {
-					System.out.println("Isti tajni kljuc");
-				}
-				priv = nPriv;
-				pub = nPub;
+//				Encoder b64 = Base64.getEncoder();
+//				String nPub = new String(b64.encode(pair.getPublic().getEncoded()));
+//				String nPriv = new String(b64.encode(pair.getPrivate().getEncoded()));
+//				System.out.println(String.format("public key: %s", nPub));
+//				System.out.println(String.format("private key: %s", nPriv));
+//				if (nPub.equals(pub)) {
+//					System.out.println("Isti javni kljuc");
+//				}
+//				if (nPriv.equals(priv)) {
+//					System.out.println("Isti tajni kljuc");
+//				}
+//				priv = nPriv;
+//				pub = nPub;
 
-				((MainGui) getParent()).setInnerPanel((new KeyPairViewGUI(pair, panel, getParent())).getPanel());
 			}
 		});
 
