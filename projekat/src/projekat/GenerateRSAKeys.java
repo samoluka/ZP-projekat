@@ -17,7 +17,7 @@ import java.util.Base64.Encoder;
 
 public class GenerateRSAKeys{
 	 
-	/* test
+	
     public static void main(String[] args)
     {
  
@@ -35,9 +35,9 @@ public class GenerateRSAKeys{
  
         publicKeyFilename = args[0].trim();
         privateKeyFilename = args[1].trim();
-        generateRSAKeys.generate(publicKeyFilename, privateKeyFilename);
+        generateRSAKeys.generate(publicKeyFilename, privateKeyFilename,1024);
  
-    }*/
+    }
  
 	// dodat keyLength da mozemo proizvoljno da setujemo duzinu kljuca RSA
     private void generate (String publicKeyFilename, String privateFilename, int keyLength){
@@ -51,7 +51,7 @@ public class GenerateRSAKeys{
             Encoder b64 = Base64.getEncoder(); //umjesto onog sa sajta uzet Base64 iz bouncy castle, msm da radi onako kako su ovi sa sajta htjeli
  
             SecureRandom random = createFixedRandom();
-            generator.initialize(keyLength, random);
+            generator.initialize(keyLength);
  
             KeyPair pair = generator.generateKeyPair();
             Key pubKey = pair.getPublic();
