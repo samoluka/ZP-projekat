@@ -14,6 +14,7 @@ public class FirstGui extends GUI {
 
 		JButton addUser = new JButton("Registracija");
 		JButton login = new JButton("Login");
+		JButton generateKeyPair = new JButton("Generisi novi par kljuca");
 
 		addUser.addActionListener(new ActionListener() {
 
@@ -32,9 +33,18 @@ public class FirstGui extends GUI {
 				((MainGui) getParent()).setInnerPanel((new LoginCreateUserGui(1, getParent())).getPanel());
 			}
 		});
+		generateKeyPair.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JButton b = (JButton) e.getSource();
+				((MainGui) getParent()).setInnerPanel((new GenereteKeyPairGUI(getParent())).getPanel());
+			}
+		});
 
 		panel.add(addUser);
 		panel.add(login);
+		panel.add(generateKeyPair);
 
 		setPanel(panel);
 

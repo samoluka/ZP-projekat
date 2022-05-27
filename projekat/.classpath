@@ -6,7 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/Korisnik/Desktop/ZP-projekat/projekat/libs/bcpg-jdk18on-171.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Korisnik/Desktop/ZP-projekat/projekat/libs/bcprov-jdk18on-171.jar"/>
+	<classpathentry kind="lib" path="libs/bcpg-jdk18on-171.jar"/>
+	<classpathentry kind="lib" path="libs/bcprov-jdk18on-171.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
