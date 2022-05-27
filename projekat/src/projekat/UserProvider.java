@@ -6,6 +6,17 @@ import java.util.List;
 public class UserProvider {
 
 	private List<User> allUsers = new LinkedList<>();
+	
+	private static String currentUser; // preko ovoga treba da se dohvata objekat korisnika da bi u generateRSAKeys
+	// mogli da dohvatimo njegove podatke pri imenovanju fajlova
+
+	public static String getCurrentUser() {
+		return currentUser;
+	}
+
+	public static void setCurrentUser(String currentUser) {
+		UserProvider.currentUser = currentUser;
+	}
 
 	private static UserProvider instance = new UserProvider();
 
