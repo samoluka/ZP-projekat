@@ -1,15 +1,34 @@
 package projekat;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
 
 public class UserProvider {
 
 	private List<User> allUsers = new LinkedList<>();
 
-	private static UserProvider instance = new UserProvider();
+	private static UserProvider instance;
+	static {
+		instance = new UserProvider();
+		try {
+			File myObj = new File(System.getProperty("user.dir") + "/users/users.txt");
+			Scanner myReader = new Scanner(myObj);
+			while (myReader.hasNextLine()) {
+				String[] data = myReader.nextLine().split(";");
+				instance.allUsers.add(new User(data[0], data[1], data[2]));
+			}
+			myReader.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+	}
 
-	private User currentUser = new User("kalus", "kurcina@kurcina.com", "superSifra");
+	private User currentUser;
 
 	public User getCurrentUser() {
 		return currentUser;
@@ -40,9 +59,10 @@ public class UserProvider {
 	}
 
 	public User getUserByUsername(String username) {
-		return allUsers.parallelStream().filter((User user) -> {
+		Optional ret = allUsers.parallelStream().filter((User user) -> {
 			return user.getUsername().equals(username);
-		}).findFirst().get();
+		}).findFirst();
+		return ret.isPresent() ? (User) ret.get() : null;
 	}
 
 	public String getAllUsersAsString() {

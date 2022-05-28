@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import projekat.UserProvider;
+
 public class FirstGui extends GUI {
 
 	FirstGui(GUI parent) {
@@ -21,7 +23,7 @@ public class FirstGui extends GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JButton b = (JButton) e.getSource();
-				((MainGui) getParent()).setInnerPanel((new LoginCreateUserGui(0, getParent())).getPanel());
+				((MainGui) getParent()).setInnerPanel((new LoginCreateUserGui(0, getParent(), panel)).getPanel());
 			}
 		});
 
@@ -30,7 +32,7 @@ public class FirstGui extends GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JButton b = (JButton) e.getSource();
-				((MainGui) getParent()).setInnerPanel((new LoginCreateUserGui(1, getParent())).getPanel());
+				((MainGui) getParent()).setInnerPanel((new LoginCreateUserGui(1, getParent(), panel)).getPanel());
 			}
 		});
 		generateKeyPair.addActionListener(new ActionListener() {
@@ -38,7 +40,10 @@ public class FirstGui extends GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JButton b = (JButton) e.getSource();
-				((MainGui) getParent()).setInnerPanel((new GenereteKeyPairGUI(getParent())).getPanel());
+				if (UserProvider.getInstance().getCurrentUser() != null)
+					((MainGui) getParent()).setInnerPanel((new GenereteKeyPairGUI(getParent())).getPanel());
+				else
+					System.err.println("Morate biti ulogovani za ovu akciju");
 			}
 		});
 
