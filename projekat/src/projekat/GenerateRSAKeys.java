@@ -89,7 +89,7 @@ public class GenerateRSAKeys {
 		aos1.close();
 
 		ArmoredOutputStream aos2 = new ArmoredOutputStream(new FileOutputStream(user.getPublicKeyRingDirectory()));
-		(user.getPublicKeyRingCollection()).encode(aos1);
+		(user.getPublicKeyRingCollection()).encode(aos2);
 		aos2.close();
 	}
 
