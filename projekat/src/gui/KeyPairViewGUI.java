@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPKeyPair;
+import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPSecretKey;
 
 import projekat.GenerateRSAKeys;
@@ -38,12 +39,14 @@ public class KeyPairViewGUI extends GUI {
 
 			GenerateRSAKeys.getInsance().addKeyPairToKeyRing(user, pair.getFirst(), pair.getSecond());
 			GenerateRSAKeys.getInsance().saveKeyRingToFile(user);
-			String pub = new String(b64.encode(pair.getSecond().getPublicKey().getEncoded()));
 
 			// ovo verovatno nije dobro dohvatanje nem pojma
 			PGPSecretKey privateKey = user.getSecretKeyRingCollection().getKeyRings().next().getSecretKeys().next();
-			String priv = String.format("%s\n%s\n%s", privateKey.getKeyID(), privateKey.getKeyID(),
-					privateKey.getUserIDs().next(), privateKey.getPublicKey().getCreationTime());
+			String priv = String.format("%s\n%s\n%s", privateKey.getKeyID(), privateKey.getUserIDs().next(),
+					privateKey.getPublicKey().getCreationTime());
+			PGPPublicKey publicKey = user.getPublicKeyRingCollection().getKeyRings().next().getPublicKeys().next();
+			String pub = String.format("%s\n%s\n%s", publicKey.getKeyID(), publicKey.getUserIDs().next(),
+					publicKey.getCreationTime());
 			JButton pubButton = new JButton("pogledaj javni kljuc");
 			JButton privButton = new JButton("Pogledaj privatni kljuc");
 			JButton back = new JButton("nazad");
