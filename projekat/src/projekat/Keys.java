@@ -1,17 +1,23 @@
 package projekat;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Iterator;
 
+import org.bouncycastle.bcpg.ArmoredOutputStream;
+import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
 
 public class Keys {
 	
-	public Iterator<PGPSecretKeyRing> getPrivateRings(int index) {
+	public Iterator<PGPSecretKeyRing> getPrivateRings() {
 		return UserProvider.getInstance().getCurrentUser().getSecretKeyRingCollection().getKeyRings();
 	}
 	
-	public Iterator<PGPPublicKeyRing> getPublicRings(int index) {
+	public Iterator<PGPPublicKeyRing> getPublicRings() {
 		return UserProvider.getInstance().getCurrentUser().getPublicKeyRingCollection().getKeyRings();
 	}
 	
@@ -67,4 +73,34 @@ public class Keys {
 		}
 	}
 	*/
+	
+	public PGPPublicKeyRing findPublicRing(long keyID) {
+		Iterator<PGPPublicKeyRing> pkrIterator = getPublicRings();
+		PGPPublicKeyRing publicKeyRing = null;
+		int found = 0;
+		while (pkrIterator.hasNext() && found == 0) {
+			publicKeyRing = pkrIterator.next();
+			Iterator<PGPPublicKey> iterKey = publicKeyRing.getPublicKeys();
+			while (iterKey.hasNext()) {
+				PGPPublicKey publicKey = iterKey.next();
+				if (keyID == publicKey.getKeyID()) {
+					found = 1; break;
+				}
+			}
+		}
+		if (found == 1) {
+			return publicKeyRing;
+		}
+		return null;
+	}
+	
+	
+	public void publicKeyExport(String savePath, long keyID) throws IOException {
+		PGPPublicKeyRing publicKeyRing = findPublicRing(keyID);
+		if(publicKeyRing != null) {
+			ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
+			publicKeyRing.encode(aos);
+            aos.close();
+		}
+	}
 }
