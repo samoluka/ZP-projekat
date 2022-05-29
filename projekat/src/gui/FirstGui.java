@@ -17,6 +17,7 @@ public class FirstGui extends GUI {
 		JButton addUser = new JButton("Registracija");
 		JButton login = new JButton("Login");
 		JButton generateKeyPair = new JButton("Generisi novi par kljuca");
+		JButton keyOverview = new JButton("Pregled kljuceva");
 
 		addUser.addActionListener(new ActionListener() {
 
@@ -47,9 +48,22 @@ public class FirstGui extends GUI {
 			}
 		});
 
+		keyOverview.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JButton b = (JButton) e.getSource();
+				if (UserProvider.getInstance().getCurrentUser() != null)
+					((MainGui) getParent()).setInnerPanel((new ShowKeysGUI(panel, getParent())).getPanel());
+				else
+					System.err.println("Morate biti ulogovani za ovu akciju");
+			}
+		});
+
 		panel.add(addUser);
 		panel.add(login);
 		panel.add(generateKeyPair);
+		panel.add(keyOverview);
 
 		setPanel(panel);
 

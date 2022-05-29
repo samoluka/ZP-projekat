@@ -1,7 +1,6 @@
 package projekat;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
@@ -13,70 +12,62 @@ import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
 
 public class Keys {
-	
-	public Iterator<PGPSecretKeyRing> getPrivateRings() {
-		return UserProvider.getInstance().getCurrentUser().getSecretKeyRingCollection().getKeyRings();
+
+	// ako se zove secret nek se i metoda tako zove cisto eto
+	public Iterator<PGPSecretKeyRing> getSecretRings(User u) {
+		return u.getSecretKeyRingCollection().getKeyRings();
 	}
-	
-	public Iterator<PGPPublicKeyRing> getPublicRings() {
-		return UserProvider.getInstance().getCurrentUser().getPublicKeyRingCollection().getKeyRings();
+
+	public Iterator<PGPPublicKeyRing> getPublicRings(User u) {
+		return u.getPublicKeyRingCollection().getKeyRings();
 	}
-	
-	
+
 	// gornje 2 metode vracaju prstenove kroz koje se iterira i hvata kljuc iz njih
 	// na klik dugmeta sledeci/prethodni pozivace se odgovarajuca metoda
 	// kod njih je implementirano tako da se na klik dugmeta sledeci sa + argumentom
-	// prelazi na sledeci javni/privatni kljuc(u zavisnosti kroz koje kljuceve zelis da iteriras)
-	
+	// prelazi na sledeci javni/privatni kljuc(u zavisnosti kroz koje kljuceve zelis
+	// da iteriras)
+
 	// npr prikaz javnih kljuceva, analogno je za privatne
 	// kod njih metoda getPublicRing pomocu indeksa vraca odgovarajuci prsten
 	// indeks krece od 0 a sa +/- se povecava i dohavata odgovarajuci prsten iz
-	// koga se sa getPublicKeys dohvata iterator kljuceva(u stvari postoji 1 kljuc po prstenu i on se sa
-	// iterator.next() dohvata, a potom se ispisuju one 3 vrednosti koje smo i dosad ispisivali)
-	
-	// mozda da bi se razlikovalo od njih stavis da dugme sledeci salje int umjesto ovog char
+	// koga se sa getPublicKeys dohvata iterator kljuceva(u stvari postoji 1 kljuc
+	// po prstenu i on se sa
+	// iterator.next() dohvata, a potom se ispisuju one 3 vrednosti koje smo i dosad
+	// ispisivali)
+
+	// mozda da bi se razlikovalo od njih stavis da dugme sledeci salje int umjesto
+	// ovog char
 	// ali sustina je svakako ista
-	
-	// znaci u tvojoj klasi ti isto treba jedan currentIndex da bi se znalo koji kljuc treba da showPublicKey/PrivateKey
-	//prikazuje
-	
-	// razlika sto ovde dohvata ring jedan po jedan, a kod nas ces ih dohatit odjednom pa iterirat u svojoj klasi kroz njih
+
+	// znaci u tvojoj klasi ti isto treba jedan currentIndex da bi se znalo koji
+	// kljuc treba da showPublicKey/PrivateKey
+	// prikazuje
+
+	// razlika sto ovde dohvata ring jedan po jedan, a kod nas ces ih dohatit
+	// odjednom pa iterirat u svojoj klasi kroz njih
 	// i kljuceve
-	
-	
-	
-	
+
 	/*
-	public void showPublicKey(char sign) {
-		PGPPublicKeyRing oldRing = currentPublicRing;
-		if (sign == '+') {
-			currentPublicIndex++;
-			currentPublicRing = keyGenerator.getPublicRing(currentPublicIndex);
-			if (currentPublicRing == null) {
-				currentPublicRing = oldRing;
-				currentPublicIndex--;
-			}
-		} else {
-			currentPublicIndex--;
-			currentPublicRing = keyGenerator.getPublicRing(currentPublicIndex);
-			if (currentPublicRing == null) {
-				currentPublicRing = oldRing;
-				currentPublicIndex++;
-			}
-		}
-		
-		if (currentPublicRing != null) {
-			java.util.Iterator<PGPPublicKey> iterPrivate = currentPublicRing.getPublicKeys();
-			PGPPublicKey currentPublicKey = iterPrivate.next();
-			publicKeyInfo[0][1].setText(String.valueOf(currentPublicKey.getKeyID()));
-			publicKeyInfo[1][1].setText(currentPublicKey.getUserIDs().next());
-			publicKeyInfo[2][1].setText(String.valueOf(currentPublicKey.getCreationTime()));
-		}
-	}
-	*/
-	
-	public PGPPublicKeyRing findPublicRing(long keyID) {
-		Iterator<PGPPublicKeyRing> pkrIterator = getPublicRings();
+	 * public void showPublicKey(char sign) { PGPPublicKeyRing oldRing =
+	 * currentPublicRing; if (sign == '+') { currentPublicIndex++; currentPublicRing
+	 * = keyGenerator.getPublicRing(currentPublicIndex); if (currentPublicRing ==
+	 * null) { currentPublicRing = oldRing; currentPublicIndex--; } } else {
+	 * currentPublicIndex--; currentPublicRing =
+	 * keyGenerator.getPublicRing(currentPublicIndex); if (currentPublicRing ==
+	 * null) { currentPublicRing = oldRing; currentPublicIndex++; } }
+	 * 
+	 * if (currentPublicRing != null) { java.util.Iterator<PGPPublicKey> iterPrivate
+	 * = currentPublicRing.getPublicKeys(); PGPPublicKey currentPublicKey =
+	 * iterPrivate.next();
+	 * publicKeyInfo[0][1].setText(String.valueOf(currentPublicKey.getKeyID()));
+	 * publicKeyInfo[1][1].setText(currentPublicKey.getUserIDs().next());
+	 * publicKeyInfo[2][1].setText(String.valueOf(currentPublicKey.getCreationTime()
+	 * )); } }
+	 */
+
+	public PGPPublicKeyRing findPublicRing(long keyID, User u) {
+		Iterator<PGPPublicKeyRing> pkrIterator = getPublicRings(u);
 		PGPPublicKeyRing publicKeyRing = null;
 		int found = 0;
 		while (pkrIterator.hasNext() && found == 0) {
@@ -85,7 +76,8 @@ public class Keys {
 			while (iterKey.hasNext()) {
 				PGPPublicKey publicKey = iterKey.next();
 				if (keyID == publicKey.getKeyID()) {
-					found = 1; break;
+					found = 1;
+					break;
 				}
 			}
 		}
@@ -94,9 +86,9 @@ public class Keys {
 		}
 		return null;
 	}
-	
-	public PGPSecretKeyRing findPrivateRing(long keyID) {
-		Iterator<PGPSecretKeyRing> pkrIterator = getPrivateRings();
+
+	public PGPSecretKeyRing findPrivateRing(long keyID, User u) {
+		Iterator<PGPSecretKeyRing> pkrIterator = getSecretRings(u);
 		PGPSecretKeyRing privateKeyRing = null;
 		int found = 0;
 		while (pkrIterator.hasNext() && found == 0) {
@@ -105,7 +97,8 @@ public class Keys {
 			while (iterKey.hasNext()) {
 				PGPSecretKey privateKey = iterKey.next();
 				if (keyID == privateKey.getKeyID()) {
-					found = 1; break;
+					found = 1;
+					break;
 				}
 			}
 		}
@@ -114,28 +107,25 @@ public class Keys {
 		}
 		return null;
 	}
-	
-	
-	public void publicKeyExport(String savePath, long keyID) throws IOException {
-		PGPPublicKeyRing publicKeyRing = findPublicRing(keyID);
-		if(publicKeyRing != null) {
+
+	public void publicKeyExport(String savePath, long keyID, User u) throws IOException {
+		PGPPublicKeyRing publicKeyRing = findPublicRing(keyID, u);
+		if (publicKeyRing != null) {
 			ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
 			publicKeyRing.encode(aos);
-            aos.close();
-		}
-		else {
+			aos.close();
+		} else {
 			// ispis da ne postoji takav kljuc
 		}
 	}
-	
-	public void privateKeyExport(String savePath, long keyID) throws IOException {
-		PGPSecretKeyRing privateKeyRing = findPrivateRing(keyID);
-		if(privateKeyRing != null) {
+
+	public void privateKeyExport(String savePath, long keyID, User u) throws IOException {
+		PGPSecretKeyRing privateKeyRing = findPrivateRing(keyID, u);
+		if (privateKeyRing != null) {
 			ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
 			privateKeyRing.encode(aos);
-            aos.close();
-		}
-		else {
+			aos.close();
+		} else {
 			// ispis da ne postoji takav kljuc
 		}
 	}
