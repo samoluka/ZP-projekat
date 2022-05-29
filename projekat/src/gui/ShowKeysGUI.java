@@ -1,10 +1,13 @@
 package gui;
 
+import java.awt.FileDialog;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -38,15 +41,19 @@ public class ShowKeysGUI extends GUI {
 		publicKeyPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		publicKeyPanel.setLayout(new BoxLayout(publicKeyPanel, BoxLayout.X_AXIS));
 		JLabel publicKeyLabel = new JLabel("javni kljuc info \t");
+		JButton publicKeyExportButton = new JButton("izvezi kljuc");
 		publicKeyPanel.add(publicKeyLabel);
 		publicKeyPanel.add(publicKeyInfo);
+		publicKeyPanel.add(publicKeyExportButton);
 
 		JPanel secretKeyPanel = new JPanel();
 		secretKeyPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		secretKeyPanel.setLayout(new BoxLayout(secretKeyPanel, BoxLayout.X_AXIS));
 		JLabel secretKeyLabel = new JLabel("privatni kljuc info \t");
+		JButton secretKeyExportButton = new JButton("izvezi kljuc");
 		secretKeyPanel.add(secretKeyLabel);
 		secretKeyPanel.add(secretKeyInfo);
+		secretKeyPanel.add(secretKeyExportButton);
 
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -88,6 +95,28 @@ public class ShowKeysGUI extends GUI {
 			updateInfo();
 		});
 
+		publicKeyExportButton.addActionListener(e -> {
+			String path = getChosenPath("Odaberite fajl za izvoz javnog kljuca");
+			if (path == null)
+				return;
+			try {
+				new Keys().publicKeyExport(path, publicKeyList.get(keyIndex).getPublicKey().getKeyID(), u);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
+		secretKeyExportButton.addActionListener(e -> {
+			String path = getChosenPath("Odaberite fajl za izvoz privatnog kljuca");
+			if (path == null)
+				return;
+			try {
+				new Keys().privateKeyExport(path, secretKeyList.get(keyIndex).getSecretKey().getKeyID(), u);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
 		updateInfo();
 
 		panel.add(publicKeyPanel);
@@ -115,6 +144,18 @@ public class ShowKeysGUI extends GUI {
 
 		publicKeyInfo.setText(pub);
 		secretKeyInfo.setText(secret);
+	}
+
+	private String getChosenPath(String message) {
+		JFrame parentFrame = new JFrame();
+
+		FileDialog fileChooser = new FileDialog(parentFrame);
+		fileChooser.setTitle(message);
+		fileChooser.setFile("*.asc");
+		fileChooser.setVisible(true);
+		String filename = fileChooser.getDirectory() + fileChooser.getFile();
+
+		return filename;
 	}
 
 }

@@ -21,6 +21,7 @@ public class UserProvider {
 				String[] data = myReader.nextLine().split(";");
 				instance.allUsers.add(new User(data[0], data[1], data[2]));
 			}
+			instance.currentUser = instance.allUsers.get(0);
 			myReader.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
