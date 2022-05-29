@@ -9,6 +9,7 @@ import java.util.Iterator;
 import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
+import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
 
 public class Keys {
@@ -94,6 +95,26 @@ public class Keys {
 		return null;
 	}
 	
+	public PGPSecretKeyRing findPrivateRing(long keyID) {
+		Iterator<PGPSecretKeyRing> pkrIterator = getPrivateRings();
+		PGPSecretKeyRing privateKeyRing = null;
+		int found = 0;
+		while (pkrIterator.hasNext() && found == 0) {
+			privateKeyRing = pkrIterator.next();
+			Iterator<PGPSecretKey> iterKey = privateKeyRing.getSecretKeys();
+			while (iterKey.hasNext()) {
+				PGPSecretKey privateKey = iterKey.next();
+				if (keyID == privateKey.getKeyID()) {
+					found = 1; break;
+				}
+			}
+		}
+		if (found == 1) {
+			return privateKeyRing;
+		}
+		return null;
+	}
+	
 	
 	public void publicKeyExport(String savePath, long keyID) throws IOException {
 		PGPPublicKeyRing publicKeyRing = findPublicRing(keyID);
@@ -101,6 +122,21 @@ public class Keys {
 			ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
 			publicKeyRing.encode(aos);
             aos.close();
+		}
+		else {
+			// ispis da ne postoji takav kljuc
+		}
+	}
+	
+	public void privateKeyExport(String savePath, long keyID) throws IOException {
+		PGPSecretKeyRing privateKeyRing = findPrivateRing(keyID);
+		if(privateKeyRing != null) {
+			ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
+			privateKeyRing.encode(aos);
+            aos.close();
+		}
+		else {
+			// ispis da ne postoji takav kljuc
 		}
 	}
 }
