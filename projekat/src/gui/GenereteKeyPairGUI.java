@@ -24,7 +24,7 @@ public class GenereteKeyPairGUI extends GUI {
 	String pub = null;
 	String priv = null;
 
-	public GenereteKeyPairGUI(GUI parent) {
+	public GenereteKeyPairGUI(JPanel returnPanel, GUI parent) {
 		setParent(parent);
 
 		JPanel panel = new JPanel();
@@ -101,6 +101,13 @@ public class GenereteKeyPairGUI extends GUI {
 		});
 
 		panel.add(generateButton);
+
+		JButton back = new JButton("nazad");
+		back.addActionListener(e -> {
+			((MainGui) getParent()).setInnerPanel(returnPanel);
+		});
+		panel.add(back);
+
 		setPanel(panel);
 
 	}

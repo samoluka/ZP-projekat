@@ -42,7 +42,7 @@ public class FirstGui extends GUI {
 			public void actionPerformed(ActionEvent e) {
 				JButton b = (JButton) e.getSource();
 				if (UserProvider.getInstance().getCurrentUser() != null)
-					((MainGui) getParent()).setInnerPanel((new GenereteKeyPairGUI(getParent())).getPanel());
+					((MainGui) getParent()).setInnerPanel((new GenereteKeyPairGUI(panel, getParent())).getPanel());
 				else
 					System.err.println("Morate biti ulogovani za ovu akciju");
 			}

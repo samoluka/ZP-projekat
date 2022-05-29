@@ -7,6 +7,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
@@ -24,8 +26,8 @@ public class ShowKeysGUI extends GUI {
 	private User u = UserProvider.getInstance().getCurrentUser();
 	private List<PGPPublicKeyRing> publicKeyList;
 	private List<PGPSecretKeyRing> secretKeyList;
-	private JLabel secretKeyInfo = new JLabel();
-	private JLabel publicKeyInfo = new JLabel();
+	private JTextArea secretKeyInfo = new JTextArea();
+	private JTextArea publicKeyInfo = new JTextArea();
 
 	public ShowKeysGUI(JPanel returnPanel, GUI parent) {
 		setParent(parent);
@@ -33,15 +35,16 @@ public class ShowKeysGUI extends GUI {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
 		JPanel publicKeyPanel = new JPanel();
+		publicKeyPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		publicKeyPanel.setLayout(new BoxLayout(publicKeyPanel, BoxLayout.X_AXIS));
-		JLabel publicKeyLabel = new JLabel("javni kljuc info");
-
+		JLabel publicKeyLabel = new JLabel("javni kljuc info \t");
 		publicKeyPanel.add(publicKeyLabel);
 		publicKeyPanel.add(publicKeyInfo);
 
 		JPanel secretKeyPanel = new JPanel();
+		secretKeyPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		secretKeyPanel.setLayout(new BoxLayout(secretKeyPanel, BoxLayout.X_AXIS));
-		JLabel secretKeyLabel = new JLabel("privatni kljuc ingo");
+		JLabel secretKeyLabel = new JLabel("privatni kljuc info \t");
 		secretKeyPanel.add(secretKeyLabel);
 		secretKeyPanel.add(secretKeyInfo);
 
@@ -50,15 +53,19 @@ public class ShowKeysGUI extends GUI {
 		JButton prev = new JButton("prethodni");
 		prev.setEnabled(false);
 		JButton next = new JButton("sledeci");
-		next.setEnabled(keyIndex == publicKeyList.size() - 1);
 		buttonPanel.add(prev);
 		buttonPanel.add(next);
+
+		publicKeyInfo.setEditable(false);
+		secretKeyInfo.setEditable(false);
 
 		publicKeyList = new ArrayList<PGPPublicKeyRing>();
 		new Keys().getPublicRings(u).forEachRemaining(key -> publicKeyList.add(key));
 
 		secretKeyList = new ArrayList<PGPSecretKeyRing>();
 		new Keys().getSecretRings(u).forEachRemaining(key -> secretKeyList.add(key));
+
+		next.setEnabled(keyIndex < publicKeyList.size() - 1);
 
 		prev.addActionListener(e -> {
 			keyIndex--;
