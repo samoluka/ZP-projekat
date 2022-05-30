@@ -1,15 +1,22 @@
 package projekat;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.bouncycastle.bcpg.ArmoredInputStream;
 import org.bouncycastle.bcpg.ArmoredOutputStream;
+import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
+import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
 import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
+import org.bouncycastle.openpgp.PGPSecretKeyRingCollection;
+import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
 
 public class Keys {
 
@@ -110,23 +117,53 @@ public class Keys {
 
 	public void publicKeyExport(String savePath, long keyID, User u) throws IOException {
 		PGPPublicKeyRing publicKeyRing = findPublicRing(keyID, u);
-		if (publicKeyRing != null) {
-			ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
-			publicKeyRing.encode(aos);
+		ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
+		publicKeyRing.encode(aos);
+		aos.close();
+	}
+	
+	public void publicKeyImport(String importPath) throws IOException, PGPException {
+		PGPPublicKeyRingCollection currentPKRC = UserProvider.getInstance().getCurrentUser()
+				.getPublicKeyRingCollection();
+		File currentPKRD = UserProvider.getInstance().getCurrentUser().getPublicKeyRingDirectory();
+
+		ArmoredInputStream ais = new ArmoredInputStream(new FileInputStream(new File(importPath)));
+		PGPPublicKeyRingCollection added = new PGPPublicKeyRingCollection(ais, new BcKeyFingerprintCalculator());
+		Iterator<PGPPublicKeyRing> ringIterator = added.getKeyRings();
+
+		while (ringIterator.hasNext()) {
+			PGPPublicKeyRing addedRing = ringIterator.next();
+			currentPKRC = PGPPublicKeyRingCollection.addPublicKeyRing(currentPKRC, addedRing);
+			ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(currentPKRD));
+			currentPKRC.encode(aos);
 			aos.close();
-		} else {
-			// ispis da ne postoji takav kljuc
 		}
 	}
 
+	// *******dodati pitanje za sifru privatnog kljuca
 	public void privateKeyExport(String savePath, long keyID, User u) throws IOException {
 		PGPSecretKeyRing privateKeyRing = findPrivateRing(keyID, u);
-		if (privateKeyRing != null) {
-			ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
-			privateKeyRing.encode(aos);
+		ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
+		privateKeyRing.encode(aos);
+		aos.close();
+	}
+	
+	public void privateKeyImport(String importPath) throws IOException, PGPException {
+		PGPSecretKeyRingCollection currentSKRC = UserProvider.getInstance().getCurrentUser()
+				.getSecretKeyRingCollection();
+		File currentSKRD = UserProvider.getInstance().getCurrentUser().getSecretKeyRingDirectory();
+
+		ArmoredInputStream ais = new ArmoredInputStream(new FileInputStream(new File(importPath)));
+		PGPSecretKeyRingCollection added = new PGPSecretKeyRingCollection(ais, new BcKeyFingerprintCalculator());
+		Iterator<PGPSecretKeyRing> ringIterator = added.getKeyRings();
+
+		while (ringIterator.hasNext()) {
+			PGPSecretKeyRing addedRing = ringIterator.next();
+			currentSKRC = PGPSecretKeyRingCollection.addSecretKeyRing(currentSKRC, addedRing);
+			ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(currentSKRD));
+			currentSKRC.encode(aos);
 			aos.close();
-		} else {
-			// ispis da ne postoji takav kljuc
 		}
 	}
+
 }
