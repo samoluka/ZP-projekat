@@ -17,7 +17,6 @@ import org.bouncycastle.openpgp.PGPKeyPair;
 import org.bouncycastle.openpgp.PGPKeyRingGenerator;
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
-import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
 import org.bouncycastle.openpgp.PGPSecretKeyRingCollection;
 import org.bouncycastle.openpgp.PGPSignature;
@@ -84,8 +83,6 @@ public class GenerateRSAKeys {
 		user.setSecretKeyRingCollection(
 				PGPSecretKeyRingCollection.addSecretKeyRing(user.getSecretKeyRingCollection(), privateKeyRing));
 
-		user.setPublicKeyRingCollection(
-				PGPPublicKeyRingCollection.addPublicKeyRing(user.getPublicKeyRingCollection(), publicKeyRing));
 	}
 
 	public void saveKeyRingToFile(User user) throws IOException {
@@ -93,10 +90,6 @@ public class GenerateRSAKeys {
 		ArmoredOutputStream aos1 = new ArmoredOutputStream(new FileOutputStream(user.getSecretKeyRingDirectory()));
 		(user.getSecretKeyRingCollection()).encode(aos1);
 		aos1.close();
-
-		ArmoredOutputStream aos2 = new ArmoredOutputStream(new FileOutputStream(user.getPublicKeyRingDirectory()));
-		(user.getPublicKeyRingCollection()).encode(aos2);
-		aos2.close();
 	}
 
 }

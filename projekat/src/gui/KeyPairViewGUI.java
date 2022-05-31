@@ -16,6 +16,7 @@ import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPKeyPair;
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPSecretKey;
+import org.bouncycastle.openpgp.PGPSecretKeyRing;
 
 import projekat.GenerateRSAKeys;
 import projekat.User;
@@ -42,9 +43,10 @@ public class KeyPairViewGUI extends GUI {
 			GenerateRSAKeys.getInsance().saveKeyRingToFile(user);
 
 			// ovo verovatno nije dobro dohvatanje nem pojma
-			PGPSecretKey privateKey = user.getSecretKeyRingCollection().getKeyRings().next().getSecretKeys().next();
+			PGPSecretKeyRing ring = user.getSecretKeyRingCollection().getKeyRings().next();
+			PGPSecretKey privateKey = ring.getSecretKey();
 			String priv = KeyFormatter.getInstance().secretKeyToString(privateKey);
-			PGPPublicKey publicKey = user.getPublicKeyRingCollection().getKeyRings().next().getPublicKeys().next();
+			PGPPublicKey publicKey = ring.getPublicKey();
 			String pub = KeyFormatter.getInstance().publicKeyToString(publicKey);
 			JButton pubButton = new JButton("pogledaj javni kljuc");
 			JButton privButton = new JButton("Pogledaj privatni kljuc");

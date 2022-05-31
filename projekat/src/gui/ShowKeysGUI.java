@@ -30,7 +30,6 @@ public class ShowKeysGUI extends GUI {
 	private int keyIndex = 0;
 	private int importedKeyIndex = 0;
 	private User u = UserProvider.getInstance().getCurrentUser();
-	private List<PGPPublicKeyRing> publicKeyList;
 	private List<PGPSecretKeyRing> secretKeyList;
 	private JTextArea secretKeyInfo = new JTextArea();
 	private JTextArea publicKeyInfo = new JTextArea();
@@ -95,22 +94,19 @@ public class ShowKeysGUI extends GUI {
 		secretKeyInfo.setEditable(false);
 		importedPublicKeyInfo.setEditable(false);
 
-		publicKeyList = new ArrayList<PGPPublicKeyRing>();
-		new Keys().getPublicRings(u).forEachRemaining(key -> publicKeyList.add(key));
-
 		secretKeyList = new ArrayList<PGPSecretKeyRing>();
 		new Keys().getSecretRings(u).forEachRemaining(key -> secretKeyList.add(key));
 
 		importedPublicKeyList = new ArrayList<PGPPublicKeyRing>();
-		new Keys().getimportedPublicRings(u).forEachRemaining(key -> importedPublicKeyList.add(key));
+		new Keys().getImportedPublicRings(u).forEachRemaining(key -> importedPublicKeyList.add(key));
 
-		next.setEnabled(keyIndex < publicKeyList.size() - 1);
+		next.setEnabled(keyIndex < secretKeyList.size() - 1);
 		importedNext.setEnabled(importedKeyIndex < importedPublicKeyList.size() - 1);
-		deletePair.setEnabled(publicKeyList.size() > 0);
+		deletePair.setEnabled(secretKeyList.size() > 0);
 
 		prev.addActionListener(e -> {
 			keyIndex--;
-			if (keyIndex < publicKeyList.size() - 1) {
+			if (keyIndex < secretKeyList.size() - 1) {
 				next.setEnabled(true);
 			}
 			if (keyIndex == 0) {
@@ -123,7 +119,7 @@ public class ShowKeysGUI extends GUI {
 			if (keyIndex > 0) {
 				prev.setEnabled(true);
 			}
-			if (keyIndex == publicKeyList.size() - 1) {
+			if (keyIndex == secretKeyList.size() - 1) {
 				next.setEnabled(false);
 			}
 			updateInfo();
@@ -155,7 +151,7 @@ public class ShowKeysGUI extends GUI {
 			if (path == null)
 				return;
 			try {
-				new Keys().publicKeyExport(path, publicKeyList.get(keyIndex).getPublicKey().getKeyID(), u);
+				new Keys().publicKeyExport(path, secretKeyList.get(keyIndex).getPublicKey().getKeyID(), u);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -180,10 +176,9 @@ public class ShowKeysGUI extends GUI {
 				// String passHash = u.getPassword().substring(u.getUsername().length() + 5);
 				if ((new Keys()).deleteSecretKey(secretKey.getKeyID(), u.getPassword(), u)) {
 					secretKeyList.remove(keyIndex);
-					publicKeyList.remove(keyIndex);
-					keyIndex = keyIndex % publicKeyList.size();
+					keyIndex = keyIndex % secretKeyList.size();
 					prev.setEnabled(keyIndex != 0);
-					next.setEnabled(keyIndex != publicKeyList.size() - 1);
+					next.setEnabled(keyIndex != secretKeyList.size() - 1);
 					message = "Obrisan je par javni privatni kljuc.";
 					updateInfo();
 				}
@@ -248,12 +243,12 @@ public class ShowKeysGUI extends GUI {
 			importedPublicKeyInfo.setText(KeyFormatter.getInstance()
 					.publicKeyToString(importedPublicKeyList.get(importedKeyIndex).getPublicKey()));
 		}
-		if (keyIndex >= publicKeyList.size()) {
+		if (keyIndex >= secretKeyList.size()) {
 			publicKeyInfo.setText("");
 			secretKeyInfo.setText("");
 			return;
 		}
-		PGPPublicKey publicKey = publicKeyList.get(keyIndex).getPublicKey();
+		PGPPublicKey publicKey = secretKeyList.get(keyIndex).getPublicKey();
 		PGPSecretKey secretKey = secretKeyList.get(keyIndex).getSecretKey();
 
 		String pub = KeyFormatter.getInstance().publicKeyToString(publicKey);

@@ -25,11 +25,7 @@ public class Keys {
 		return u.getSecretKeyRingCollection().getKeyRings();
 	}
 
-	public Iterator<PGPPublicKeyRing> getPublicRings(User u) {
-		return u.getPublicKeyRingCollection().getKeyRings();
-	}
-
-	public Iterator<PGPPublicKeyRing> getimportedPublicRings(User u) {
+	public Iterator<PGPPublicKeyRing> getImportedPublicRings(User u) {
 		return u.getImportedPublicKeyRingCollection().getKeyRings();
 	}
 	// gornje 2 metode vracaju prstenove kroz koje se iterira i hvata kljuc iz njih
@@ -76,23 +72,19 @@ public class Keys {
 	 * )); } }
 	 */
 
-	public PGPPublicKeyRing findPublicRing(long keyID, User u) {
-		Iterator<PGPPublicKeyRing> pkrIterator = getPublicRings(u);
-		PGPPublicKeyRing publicKeyRing = null;
+	public PGPPublicKey findPublicRing(long keyID, User u) {
+		Iterator<PGPSecretKeyRing> pkrIterator = getSecretRings(u);
+		PGPPublicKey publicKey = null;
 		int found = 0;
 		while (pkrIterator.hasNext() && found == 0) {
-			publicKeyRing = pkrIterator.next();
-			Iterator<PGPPublicKey> iterKey = publicKeyRing.getPublicKeys();
-			while (iterKey.hasNext()) {
-				PGPPublicKey publicKey = iterKey.next();
-				if (keyID == publicKey.getKeyID()) {
-					found = 1;
-					break;
-				}
+			publicKey = pkrIterator.next().getPublicKey();
+			if (keyID == publicKey.getKeyID()) {
+				found = 1;
+				break;
 			}
 		}
 		if (found == 1) {
-			return publicKeyRing;
+			return publicKey;
 		}
 		return null;
 	}
@@ -119,9 +111,9 @@ public class Keys {
 	}
 
 	public void publicKeyExport(String savePath, long keyID, User u) throws IOException {
-		PGPPublicKeyRing publicKeyRing = findPublicRing(keyID, u);
+		PGPPublicKey publicKey = findPublicRing(keyID, u);
 		ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
-		publicKeyRing.encode(aos);
+		publicKey.encode(aos);
 		aos.close();
 	}
 
@@ -228,22 +220,22 @@ public class Keys {
 		aos.close();
 
 		UserProvider.getInstance().getCurrentUser().setSecretKeyRingCollection(SKRC);
-		deletePublicKey(keyID, user);
+		// deletePublicKey(keyID, user);
 
 		return true;
 	}
 
-	public void deletePublicKey(long keyID, User user) throws IOException {
-		PGPPublicKeyRingCollection PCRC = user.getPublicKeyRingCollection();
-		File PCRD = user.getPublicKeyRingDirectory();
-		PGPPublicKeyRing publicRing = findPublicRing(keyID, user);
-
-		PCRC = PGPPublicKeyRingCollection.removePublicKeyRing(PCRC, publicRing);
-		ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(PCRD));
-		PCRC.encode(aos);
-		aos.close();
-
-		UserProvider.getInstance().getCurrentUser().setPublicKeyRingCollection(PCRC);
-		// initialize(path); zasad nek stoji, posle brisemo ako ne valja
-	}
+//	public void deletePublicKey(long keyID, User user) throws IOException {
+//		PGPPublicKeyRingCollection PCRC = user.getPublicKeyRingCollection();
+//		File PCRD = user.getPublicKeyRingDirectory();
+//		PGPPublicKeyRing publicRing = findPublicRing(keyID, user);
+//
+//		PCRC = PGPPublicKeyRingCollection.removePublicKeyRing(PCRC, publicRing);
+//		ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(PCRD));
+//		PCRC.encode(aos);
+//		aos.close();
+//
+//		UserProvider.getInstance().getCurrentUser().setPublicKeyRingCollection(PCRC);
+//		// initialize(path); zasad nek stoji, posle brisemo ako ne valja
+//	}
 }
