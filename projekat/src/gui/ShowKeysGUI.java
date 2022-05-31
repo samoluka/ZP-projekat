@@ -9,6 +9,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
@@ -60,8 +61,10 @@ public class ShowKeysGUI extends GUI {
 		JButton prev = new JButton("prethodni");
 		prev.setEnabled(false);
 		JButton next = new JButton("sledeci");
+		JButton deletePair = new JButton("brisanje para javni privatni kljuc");
 		buttonPanel.add(prev);
 		buttonPanel.add(next);
+		buttonPanel.add(deletePair);
 
 		publicKeyInfo.setEditable(false);
 		secretKeyInfo.setEditable(false);
@@ -73,6 +76,7 @@ public class ShowKeysGUI extends GUI {
 		new Keys().getSecretRings(u).forEachRemaining(key -> secretKeyList.add(key));
 
 		next.setEnabled(keyIndex < publicKeyList.size() - 1);
+		deletePair.setEnabled(publicKeyList.size() > 0);
 
 		prev.addActionListener(e -> {
 			keyIndex--;
@@ -117,6 +121,27 @@ public class ShowKeysGUI extends GUI {
 				e1.printStackTrace();
 			}
 		});
+
+		deletePair.addActionListener(e -> {
+			PGPSecretKey secretKey = secretKeyList.get(keyIndex).getSecretKey();
+
+			try {
+				// String passHash = u.getPassword().substring(u.getUsername().length() + 5);
+				if ((new Keys()).deleteSecretKey(secretKey.getKeyID(), u.getPassword(), u)) {
+					secretKeyList.remove(keyIndex);
+					publicKeyList.remove(keyIndex);
+					keyIndex = keyIndex % publicKeyList.size();
+					prev.setEnabled(keyIndex != 0);
+					next.setEnabled(keyIndex != publicKeyList.size() - 1);
+					showDeletedView();
+					updateInfo();
+				}
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
+
 		updateInfo();
 
 		panel.add(publicKeyPanel);
@@ -132,8 +157,16 @@ public class ShowKeysGUI extends GUI {
 		setPanel(panel);
 	}
 
+	private void showDeletedView() {
+		JFrame f = new JFrame();
+		JOptionPane.showMessageDialog(getPanel(), "Obrisan je par javni privatni kljuc.");
+		System.out.println("uspesno brisanje");
+	}
+
 	private void updateInfo() {
 		if (keyIndex >= publicKeyList.size()) {
+			publicKeyInfo.setText("");
+			secretKeyInfo.setText("");
 			return;
 		}
 		PGPPublicKey publicKey = publicKeyList.get(keyIndex).getPublicKey();

@@ -64,6 +64,12 @@ public class GenerateRSAKeys {
 				.get(HashAlgorithmTags.SHA1);
 
 		// za generisanje prstenova javnih i privatnih kljuceva
+		// ovde treba mozda popraviti ovo da se negde cuva hash sifre pa da nema tih
+		// problema za sad je ovako
+
+		// String passHash = user.getPassword().substring(user.getUsername().length() +
+		// 5);
+
 		PGPKeyRingGenerator keyRingGenerator = new PGPKeyRingGenerator(PGPSignature.POSITIVE_CERTIFICATION,
 				pgpMasterKeyPair, user.getUsername() + "#" + user.getEmail(), sha1DigestCalculator, null, null,
 				new JcaPGPContentSignerBuilder(PGPPublicKey.RSA_SIGN, HashAlgorithmTags.SHA1),
