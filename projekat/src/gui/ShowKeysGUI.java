@@ -124,7 +124,7 @@ public class ShowKeysGUI extends GUI {
 
 		deletePair.addActionListener(e -> {
 			PGPSecretKey secretKey = secretKeyList.get(keyIndex).getSecretKey();
-
+			String message = "Doslo je do greske prilikom brisanja.";
 			try {
 				// String passHash = u.getPassword().substring(u.getUsername().length() + 5);
 				if ((new Keys()).deleteSecretKey(secretKey.getKeyID(), u.getPassword(), u)) {
@@ -133,13 +133,14 @@ public class ShowKeysGUI extends GUI {
 					keyIndex = keyIndex % publicKeyList.size();
 					prev.setEnabled(keyIndex != 0);
 					next.setEnabled(keyIndex != publicKeyList.size() - 1);
-					showDeletedView();
+					message = "Obrisan je par javni privatni kljuc.";
 					updateInfo();
 				}
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			showDeletedView(message);
 		});
 
 		updateInfo();
@@ -157,10 +158,9 @@ public class ShowKeysGUI extends GUI {
 		setPanel(panel);
 	}
 
-	private void showDeletedView() {
+	private void showDeletedView(String message) {
 		JFrame f = new JFrame();
-		JOptionPane.showMessageDialog(getPanel(), "Obrisan je par javni privatni kljuc.");
-		System.out.println("uspesno brisanje");
+		JOptionPane.showMessageDialog(getPanel(), message);
 	}
 
 	private void updateInfo() {
