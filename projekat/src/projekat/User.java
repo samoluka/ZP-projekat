@@ -18,9 +18,11 @@ public class User {
 
 	private PGPPublicKeyRingCollection publicKeyRingCollection;
 	private PGPSecretKeyRingCollection secretKeyRingCollection;
+	private PGPPublicKeyRingCollection importedPublicKeyRingCollection;
 
 	private File publicKeyRingDirectory;
 	private File secretKeyRingDirectory;
+	private File importedPublicKeyRingDirectory;
 
 	public File getPublicKeyRingDirectory() {
 		return publicKeyRingDirectory;
@@ -52,6 +54,22 @@ public class User {
 
 	public void setSecretKeyRingCollection(PGPSecretKeyRingCollection secretKeyRingCollection) {
 		this.secretKeyRingCollection = secretKeyRingCollection;
+	}
+
+	public PGPPublicKeyRingCollection getImportedPublicKeyRingCollection() {
+		return importedPublicKeyRingCollection;
+	}
+
+	public void setImportedPublicKeyRingCollection(PGPPublicKeyRingCollection importedPublicKeyRingCollection) {
+		this.importedPublicKeyRingCollection = importedPublicKeyRingCollection;
+	}
+
+	public File getImportedPublicKeyRingDirectory() {
+		return importedPublicKeyRingDirectory;
+	}
+
+	public void setImportedPublicKeyRingDirectory(File importedPublicKeyRingDirectory) {
+		this.importedPublicKeyRingDirectory = importedPublicKeyRingDirectory;
 	}
 
 	public String getUsername() {
@@ -91,11 +109,16 @@ public class User {
 			publicKeyRingDirectory.createNewFile();
 			secretKeyRingDirectory = new File(path + "\\privateKeyRing.asc");
 			secretKeyRingDirectory.createNewFile();
+			importedPublicKeyRingDirectory = new File(path + "\\importedPublicKeyRing.asc");
+			importedPublicKeyRingDirectory.createNewFile();
 			publicKeyRingCollection = new PGPPublicKeyRingCollection(
 					new ArmoredInputStream(new FileInputStream(publicKeyRingDirectory)),
 					new BcKeyFingerprintCalculator());
 			secretKeyRingCollection = new PGPSecretKeyRingCollection(
 					new ArmoredInputStream(new FileInputStream(secretKeyRingDirectory)),
+					new BcKeyFingerprintCalculator());
+			importedPublicKeyRingCollection = new PGPPublicKeyRingCollection(
+					new ArmoredInputStream(new FileInputStream(importedPublicKeyRingDirectory)),
 					new BcKeyFingerprintCalculator());
 		} catch (IOException | PGPException e) {
 			// TODO Auto-generated catch block

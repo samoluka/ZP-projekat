@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
+import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.bouncycastle.openpgp.PGPSecretKey;
@@ -27,11 +28,14 @@ import util.KeyFormatter;
 public class ShowKeysGUI extends GUI {
 
 	private int keyIndex = 0;
+	private int importedKeyIndex = 0;
 	private User u = UserProvider.getInstance().getCurrentUser();
 	private List<PGPPublicKeyRing> publicKeyList;
 	private List<PGPSecretKeyRing> secretKeyList;
 	private JTextArea secretKeyInfo = new JTextArea();
 	private JTextArea publicKeyInfo = new JTextArea();
+	private JTextArea importedPublicKeyInfo = new JTextArea();
+	private ArrayList<PGPPublicKeyRing> importedPublicKeyList;
 
 	public ShowKeysGUI(JPanel returnPanel, GUI parent) {
 		setParent(parent);
@@ -56,18 +60,40 @@ public class ShowKeysGUI extends GUI {
 		secretKeyPanel.add(secretKeyInfo);
 		secretKeyPanel.add(secretKeyExportButton);
 
+		JPanel importedPublicKeyPanel = new JPanel();
+		importedPublicKeyPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		importedPublicKeyPanel.setLayout(new BoxLayout(importedPublicKeyPanel, BoxLayout.X_AXIS));
+		JLabel importedPublicKeyLabel = new JLabel("javni kljuc info \t");
+		JButton importedPublicKeyExportButton = new JButton("izvezi kljuc");
+		importedPublicKeyPanel.add(importedPublicKeyLabel);
+		importedPublicKeyPanel.add(importedPublicKeyInfo);
+		JPanel importedPublicKeyButtonPanel = new JPanel();
+		importedPublicKeyButtonPanel.setLayout(new BoxLayout(importedPublicKeyButtonPanel, BoxLayout.Y_AXIS));
+		JButton importedPrev = new JButton("prethodni");
+		importedPrev.setEnabled(false);
+		JButton importedNext = new JButton("sledeci");
+		importedPublicKeyButtonPanel.add(importedPublicKeyExportButton);
+		importedPublicKeyButtonPanel.add(importedPrev);
+		importedPublicKeyButtonPanel.add(importedNext);
+		importedPublicKeyPanel.add(importedPublicKeyButtonPanel);
+
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		JButton prev = new JButton("prethodni");
 		prev.setEnabled(false);
 		JButton next = new JButton("sledeci");
 		JButton deletePair = new JButton("brisanje para javni privatni kljuc");
+		JButton importSecretKey = new JButton("Uvezi privatni kljuc");
+		JButton importPublicKey = new JButton("Uvezi javni kljuc");
 		buttonPanel.add(prev);
 		buttonPanel.add(next);
 		buttonPanel.add(deletePair);
+		buttonPanel.add(importSecretKey);
+		buttonPanel.add(importPublicKey);
 
 		publicKeyInfo.setEditable(false);
 		secretKeyInfo.setEditable(false);
+		importedPublicKeyInfo.setEditable(false);
 
 		publicKeyList = new ArrayList<PGPPublicKeyRing>();
 		new Keys().getPublicRings(u).forEachRemaining(key -> publicKeyList.add(key));
@@ -75,7 +101,11 @@ public class ShowKeysGUI extends GUI {
 		secretKeyList = new ArrayList<PGPSecretKeyRing>();
 		new Keys().getSecretRings(u).forEachRemaining(key -> secretKeyList.add(key));
 
+		importedPublicKeyList = new ArrayList<PGPPublicKeyRing>();
+		new Keys().getimportedPublicRings(u).forEachRemaining(key -> importedPublicKeyList.add(key));
+
 		next.setEnabled(keyIndex < publicKeyList.size() - 1);
+		importedNext.setEnabled(importedKeyIndex < importedPublicKeyList.size() - 1);
 		deletePair.setEnabled(publicKeyList.size() > 0);
 
 		prev.addActionListener(e -> {
@@ -95,6 +125,27 @@ public class ShowKeysGUI extends GUI {
 			}
 			if (keyIndex == publicKeyList.size() - 1) {
 				next.setEnabled(false);
+			}
+			updateInfo();
+		});
+
+		importedPrev.addActionListener(e -> {
+			importedKeyIndex--;
+			if (importedKeyIndex < importedPublicKeyList.size() - 1) {
+				importedNext.setEnabled(true);
+			}
+			if (importedKeyIndex == 0) {
+				importedPrev.setEnabled(false);
+			}
+			updateInfo();
+		});
+		importedNext.addActionListener(e -> {
+			importedKeyIndex++;
+			if (importedKeyIndex > 0) {
+				importedPrev.setEnabled(true);
+			}
+			if (importedKeyIndex == importedPublicKeyList.size() - 1) {
+				importedNext.setEnabled(false);
 			}
 			updateInfo();
 		});
@@ -143,11 +194,38 @@ public class ShowKeysGUI extends GUI {
 			showDeletedView(message);
 		});
 
+		importSecretKey.addActionListener(e -> {
+			String path = getChosenPath("Odaberite fajl za uvoz privatnog kljuca");
+			if (path == null)
+				return;
+			try {
+				new Keys().secretKeyImport(path, u);
+				((MainGui) getParent()).setInnerPanel(new ShowKeysGUI(returnPanel, parent).getPanel());
+			} catch (PGPException | IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
+
+		importPublicKey.addActionListener(e -> {
+			String path = getChosenPath("Odaberite fajl za uvoz javnog kljuca");
+			if (path == null)
+				return;
+			try {
+				new Keys().publicKeyImport(path, u);
+				((MainGui) getParent()).setInnerPanel(new ShowKeysGUI(returnPanel, parent).getPanel());
+			} catch (PGPException | IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
+
 		updateInfo();
 
 		panel.add(publicKeyPanel);
 		panel.add(secretKeyPanel);
 		panel.add(buttonPanel);
+		panel.add(importedPublicKeyPanel);
 
 		JButton back = new JButton("nazad");
 		back.addActionListener(e -> {
@@ -164,6 +242,12 @@ public class ShowKeysGUI extends GUI {
 	}
 
 	private void updateInfo() {
+		if (importedKeyIndex >= importedPublicKeyList.size()) {
+			importedPublicKeyInfo.setText("");
+		} else {
+			importedPublicKeyInfo.setText(KeyFormatter.getInstance()
+					.publicKeyToString(importedPublicKeyList.get(importedKeyIndex).getPublicKey()));
+		}
 		if (keyIndex >= publicKeyList.size()) {
 			publicKeyInfo.setText("");
 			secretKeyInfo.setText("");

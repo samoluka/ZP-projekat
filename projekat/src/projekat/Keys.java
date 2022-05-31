@@ -29,6 +29,9 @@ public class Keys {
 		return u.getPublicKeyRingCollection().getKeyRings();
 	}
 
+	public Iterator<PGPPublicKeyRing> getimportedPublicRings(User u) {
+		return u.getImportedPublicKeyRingCollection().getKeyRings();
+	}
 	// gornje 2 metode vracaju prstenove kroz koje se iterira i hvata kljuc iz njih
 	// na klik dugmeta sledeci/prethodni pozivace se odgovarajuca metoda
 	// kod njih je implementirano tako da se na klik dugmeta sledeci sa + argumentom
@@ -122,10 +125,9 @@ public class Keys {
 		aos.close();
 	}
 
-	public void publicKeyImport(String importPath) throws IOException, PGPException {
-		PGPPublicKeyRingCollection currentPKRC = UserProvider.getInstance().getCurrentUser()
-				.getPublicKeyRingCollection();
-		File currentPKRD = UserProvider.getInstance().getCurrentUser().getPublicKeyRingDirectory();
+	public void publicKeyImport(String importPath, User u) throws IOException, PGPException {
+		PGPPublicKeyRingCollection currentPKRC = u.getImportedPublicKeyRingCollection();
+		File currentPKRD = u.getImportedPublicKeyRingDirectory();
 
 		ArmoredInputStream ais = new ArmoredInputStream(new FileInputStream(new File(importPath)));
 		PGPPublicKeyRingCollection added = new PGPPublicKeyRingCollection(ais, new BcKeyFingerprintCalculator());
@@ -139,7 +141,7 @@ public class Keys {
 			aos.close();
 		}
 
-		UserProvider.getInstance().getCurrentUser().setPublicKeyRingCollection(currentPKRC);
+		u.setImportedPublicKeyRingCollection(currentPKRC);
 	}
 
 	// *******dodati pitanje za sifru privatnog kljuca
@@ -150,7 +152,7 @@ public class Keys {
 		aos.close();
 	}
 
-	public void privateKeyImport(String importPath) throws IOException, PGPException {
+	public void secretKeyImport(String importPath, User u) throws IOException, PGPException {
 		PGPSecretKeyRingCollection currentSKRC = UserProvider.getInstance().getCurrentUser()
 				.getSecretKeyRingCollection();
 		File currentSKRD = UserProvider.getInstance().getCurrentUser().getSecretKeyRingDirectory();
@@ -167,7 +169,7 @@ public class Keys {
 			aos.close();
 		}
 
-		UserProvider.getInstance().getCurrentUser().setSecretKeyRingCollection(currentSKRC);
+		u.setSecretKeyRingCollection(currentSKRC);
 	}
 
 	// metoda za brisanje kljuceva
