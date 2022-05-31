@@ -139,6 +139,8 @@ public class Keys {
 			currentPKRC.encode(aos);
 			aos.close();
 		}
+		
+		UserProvider.getInstance().getCurrentUser().setPublicKeyRingCollection(currentPKRC);
 	}
 
 	// *******dodati pitanje za sifru privatnog kljuca
@@ -165,6 +167,8 @@ public class Keys {
 			currentSKRC.encode(aos);
 			aos.close();
 		}
+		
+		UserProvider.getInstance().getCurrentUser().setSecretKeyRingCollection(currentSKRC);
 	}
 
 	// metoda za brisanje kljuceva
@@ -205,7 +209,7 @@ public class Keys {
 	// brisanje javnog kljuca se uvijek uspijesno izvrsi
 
 	public boolean deletePrivateKey(long keyID, String password, User user) throws IOException {
-		PGPSecretKeyRingCollection SCRC = user.getSecretKeyRingCollection();
+		PGPSecretKeyRingCollection SKRC = user.getSecretKeyRingCollection();
 		PGPSecretKeyRing secretRing = findPrivateRing(keyID, user);
 
 		File SCRD = user.getSecretKeyRingDirectory();
@@ -217,11 +221,13 @@ public class Keys {
 			// e.printStackTrace();
 			return false;
 		}
-		SCRC = PGPSecretKeyRingCollection.removeSecretKeyRing(SCRC, secretRing);
+		SKRC = PGPSecretKeyRingCollection.removeSecretKeyRing(SKRC, secretRing);
 		ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(SCRD));
-		SCRC.encode(aos);
+		SKRC.encode(aos);
 		aos.close();
 
+		
+		UserProvider.getInstance().getCurrentUser().setSecretKeyRingCollection(SKRC);
 		deletePublicKey(keyID, user);
 
 		return true;
@@ -232,12 +238,12 @@ public class Keys {
 		File PCRD = user.getPublicKeyRingDirectory();
 		PGPPublicKeyRing publicRing = findPublicRing(keyID, user);
 
-		if (publicRing != null) {
 			PCRC = PGPPublicKeyRingCollection.removePublicKeyRing(PCRC, publicRing);
 			ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(PCRD));
 			PCRC.encode(aos);
 			aos.close();
-		}
+			
+		UserProvider.getInstance().getCurrentUser().setPublicKeyRingCollection(PCRC);
 		// initialize(path);  zasad nek stoji, posle brisemo ako ne valja
 	}
 }
