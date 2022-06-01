@@ -18,6 +18,7 @@ public class FirstGui extends GUI {
 		JButton login = new JButton("Login");
 		JButton generateKeyPair = new JButton("Generisi novi par kljuca");
 		JButton keyOverview = new JButton("Pregled kljuceva");
+		JButton encrypt = new JButton("sifruj poruku");
 
 		addUser.addActionListener(new ActionListener() {
 
@@ -59,11 +60,20 @@ public class FirstGui extends GUI {
 					System.err.println("Morate biti ulogovani za ovu akciju");
 			}
 		});
+		encrypt.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JButton b = (JButton) e.getSource();
+				((MainGui) getParent()).setInnerPanel((new MessageEncryptionGui(panel, getParent())).getPanel());
+			}
+		});
 
 		panel.add(addUser);
 		panel.add(login);
 		panel.add(generateKeyPair);
 		panel.add(keyOverview);
+		panel.add(encrypt);
 
 		setPanel(panel);
 
