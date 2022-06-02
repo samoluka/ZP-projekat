@@ -16,11 +16,21 @@ public class User {
 	private String password;
 	private String email;
 
+//	private PGPPublicKeyRingCollection publicKeyRingCollection;
 	private PGPSecretKeyRingCollection secretKeyRingCollection;
 	private PGPPublicKeyRingCollection importedPublicKeyRingCollection;
 
+//	private File publicKeyRingDirectory;
 	private File secretKeyRingDirectory;
 	private File importedPublicKeyRingDirectory;
+
+//	public File getPublicKeyRingDirectory() {
+//		return publicKeyRingDirectory;
+//	}
+//
+//	public void setPublicKeyRingDirectory(File publicKeyRingDirectory) {
+//		this.publicKeyRingDirectory = publicKeyRingDirectory;
+//	}
 
 	public File getSecretKeyRingDirectory() {
 		return secretKeyRingDirectory;
@@ -29,6 +39,14 @@ public class User {
 	public void setSecretKeyRingDirectory(File secretKeyRingDirectory) {
 		this.secretKeyRingDirectory = secretKeyRingDirectory;
 	}
+
+//	public PGPPublicKeyRingCollection getPublicKeyRingCollection() {
+//		return publicKeyRingCollection;
+//	}
+//
+//	public void setPublicKeyRingCollection(PGPPublicKeyRingCollection publicKeyRingCollection) {
+//		this.publicKeyRingCollection = publicKeyRingCollection;
+//	}
 
 	public PGPSecretKeyRingCollection getSecretKeyRingCollection() {
 		return secretKeyRingCollection;
@@ -87,10 +105,15 @@ public class User {
 		(new File(path)).mkdirs();
 
 		try {
+//			publicKeyRingDirectory = new File(path + "\\publicKeyRing.asc");
+//			publicKeyRingDirectory.createNewFile();
 			secretKeyRingDirectory = new File(path + "\\privateKeyRing.asc");
 			secretKeyRingDirectory.createNewFile();
 			importedPublicKeyRingDirectory = new File(path + "\\importedPublicKeyRing.asc");
 			importedPublicKeyRingDirectory.createNewFile();
+//			publicKeyRingCollection = new PGPPublicKeyRingCollection(
+//					new ArmoredInputStream(new FileInputStream(publicKeyRingDirectory)),
+//					new BcKeyFingerprintCalculator());
 			secretKeyRingCollection = new PGPSecretKeyRingCollection(
 					new ArmoredInputStream(new FileInputStream(secretKeyRingDirectory)),
 					new BcKeyFingerprintCalculator());

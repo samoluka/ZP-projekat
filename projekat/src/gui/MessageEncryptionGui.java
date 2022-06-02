@@ -4,6 +4,7 @@ import java.awt.FileDialog;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -21,11 +22,9 @@ import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
-import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 import org.bouncycastle.util.Strings;
 
 import projekat.Keys;
-import projekat.MessageDecryption;
 import projekat.MessageEncryption;
 import projekat.User;
 import projekat.UserProvider;
@@ -70,6 +69,13 @@ public class MessageEncryptionGui extends GUI {
 
 		secretKeyList = new ArrayList<PGPSecretKeyRing>();
 		new Keys().getSecretRings(u).forEachRemaining(key -> secretKeyList.add(key));
+
+//		List<PGPPublicKey> pub = new ArrayList<>();
+//		u.getPublicKeyRingCollection().getKeyRings().forEachRemaining(key -> {
+//			Iterator<PGPPublicKey> iter = key.getPublicKeys();
+//			iter.next();
+//			pub.add(iter.next());
+//		});
 
 		JPanel algorithmPanel = new JPanel();
 		algorithmPanel.setLayout(new BoxLayout(algorithmPanel, BoxLayout.X_AXIS));
@@ -119,17 +125,18 @@ public class MessageEncryptionGui extends GUI {
 					: SymmetricKeyAlgorithmTags.AES_128;
 			System.out.println(path);
 			try (FileOutputStream fos = new FileOutputStream(path)) {
-				byte[] encrypted = MessageEncryption.getInstance()
-						.encryptMessage(secretKeyList.get(keyIndex).getPublicKey(), msg, alg);
+				Iterator<PGPPublicKey> iter = secretKeyList.get(keyIndex).getPublicKeys();
+				iter.next();
+				byte[] encrypted = MessageEncryption.getInstance().encryptMessage(iter.next(), msg, alg);
 				fos.write(encrypted);
 				showMessage("poruka je uspesno sifrovana");
-				System.out
-						.println(
-								Strings.fromByteArray(MessageDecryption.getInstance().decryptMessage(
-										secretKeyList.get(keyIndex).getSecretKey()
-												.extractPrivateKey(new JcePBESecretKeyDecryptorBuilder()
-														.setProvider("BC").build(u.getPassword().toCharArray())),
-										encrypted)));
+//				System.out
+//						.println(
+//								Strings.fromByteArray(MessageDecryption.getInstance().decryptMessage(
+//										secretKeyList.get(keyIndex).getSecretKey()
+//												.extractPrivateKey(new JcePBESecretKeyDecryptorBuilder()
+//														.setProvider("BC").build(u.getPassword().toCharArray())),
+//										encrypted)));
 			} catch (PGPException | IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
