@@ -17,6 +17,8 @@ import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPKeyPair;
 
 import projekat.GenerateRSAKeys;
+import projekat.User;
+import projekat.UserProvider;
 import util.Pair;
 
 public class GenereteKeyPairGUI extends GUI {
@@ -30,21 +32,14 @@ public class GenereteKeyPairGUI extends GUI {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, 1));
 
-		JLabel usernameLabel = new JLabel("korisnicko ime: ");
 		JLabel emailLabel = new JLabel("e-mail:");
 		JLabel passLabel = new JLabel("sifra:");
 		JLabel lengthLabel = new JLabel("duzina kljuca:");
 
-		JTextField username = new JTextField(30);
 		JTextField email = new JTextField(30);
 		JTextField pass = new JTextField(30);
 		Integer[] optionsToChoose = { 1024, 2048, 4096 };
 		JComboBox<Integer> lengthDropDown = new JComboBox<>(optionsToChoose);
-
-		JPanel usernamePanel = new JPanel();
-		usernamePanel.setLayout(new BoxLayout(usernamePanel, 0));
-		usernamePanel.add(usernameLabel);
-		usernamePanel.add(username);
 
 		JPanel emailPanel = new JPanel();
 		emailPanel.setLayout(new BoxLayout(emailPanel, 0));
@@ -61,7 +56,6 @@ public class GenereteKeyPairGUI extends GUI {
 		lengthPanel.add(lengthLabel);
 		lengthPanel.add(lengthDropDown);
 
-		panel.add(usernamePanel);
 		panel.add(emailPanel);
 		panel.add(passPanel);
 		panel.add(lengthPanel);
@@ -75,9 +69,13 @@ public class GenereteKeyPairGUI extends GUI {
 				JButton b = (JButton) e.getSource();
 
 				GenerateRSAKeys generator = GenerateRSAKeys.getInsance();
+				User user = UserProvider.getInstance().getCurrentUser();
 				Pair<PGPKeyPair, PGPKeyPair> pair;
 				try {
 					pair = generator.generate((Integer) lengthDropDown.getSelectedItem());
+					generator.addKeyPairToKeyRing(user, email.getText(), pass.getText(), pair.getFirst(),
+							pair.getSecond());
+					generator.saveKeyRingToFile(user);
 					((MainGui) getParent()).setInnerPanel((new KeyPairViewGUI(pair, panel, getParent())).getPanel());
 				} catch (NoSuchProviderException | NoSuchAlgorithmException | PGPException | IOException e1) {
 					// TODO Auto-generated catch block

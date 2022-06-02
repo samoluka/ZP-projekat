@@ -56,7 +56,8 @@ public class GenerateRSAKeys {
 
 	}
 
-	public void addKeyPairToKeyRing(User user, PGPKeyPair pgpMasterKeyPair, PGPKeyPair pgpKeyPair) throws PGPException {
+	public void addKeyPairToKeyRing(User u, String mail, String password, PGPKeyPair pgpMasterKeyPair,
+			PGPKeyPair pgpKeyPair) throws PGPException {
 		// za hash(vrv za cuvanje passworda u hashu sha1 u prstenu priv kljuceva)
 		PGPDigestCalculator sha1DigestCalculator = new JcaPGPDigestCalculatorProviderBuilder().build()
 				.get(HashAlgorithmTags.SHA1);
@@ -69,18 +70,18 @@ public class GenerateRSAKeys {
 		// 5);
 
 		PGPKeyRingGenerator keyRingGenerator = new PGPKeyRingGenerator(PGPSignature.POSITIVE_CERTIFICATION,
-				pgpMasterKeyPair, user.getUsername() + "#" + user.getEmail(), sha1DigestCalculator, null, null,
+				pgpMasterKeyPair, u.getUsername() + "#" + mail, sha1DigestCalculator, null, null,
 				new JcaPGPContentSignerBuilder(PGPPublicKey.RSA_SIGN, HashAlgorithmTags.SHA1),
 				new JcePBESecretKeyEncryptorBuilder(PGPEncryptedData.AES_256, sha1DigestCalculator).setProvider("BC")
-						.build(user.getPassword().toCharArray()));
+						.build(password.toCharArray()));
 
 		keyRingGenerator.addSubKey(pgpKeyPair);
 
 		PGPSecretKeyRing privateKeyRing = keyRingGenerator.generateSecretKeyRing();
 //		PGPPublicKeyRing publicKeyRing = keyRingGenerator.generatePublicKeyRing();
 
-		user.setSecretKeyRingCollection(
-				PGPSecretKeyRingCollection.addSecretKeyRing(user.getSecretKeyRingCollection(), privateKeyRing));
+		u.setSecretKeyRingCollection(
+				PGPSecretKeyRingCollection.addSecretKeyRing(u.getSecretKeyRingCollection(), privateKeyRing));
 
 //		user.setPublicKeyRingCollection(
 //				PGPPublicKeyRingCollection.addPublicKeyRing(user.getPublicKeyRingCollection(), publicKeyRing));
