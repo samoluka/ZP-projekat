@@ -19,6 +19,7 @@ public class FirstGui extends GUI {
 		JButton generateKeyPair = new JButton("Generisi novi par kljuca");
 		JButton keyOverview = new JButton("Pregled kljuceva");
 		JButton encrypt = new JButton("sifruj poruku");
+		JButton decrypt = new JButton("desifruj poruku");
 
 		addUser.addActionListener(new ActionListener() {
 
@@ -69,11 +70,21 @@ public class FirstGui extends GUI {
 			}
 		});
 
+		decrypt.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JButton b = (JButton) e.getSource();
+				((MainGui) getParent()).setInnerPanel((new MessageDecryptionGui(panel, getParent())).getPanel());
+			}
+		});
+
 		panel.add(addUser);
 		panel.add(login);
 		panel.add(generateKeyPair);
 		panel.add(keyOverview);
 		panel.add(encrypt);
+		panel.add(decrypt);
 
 		setPanel(panel);
 
