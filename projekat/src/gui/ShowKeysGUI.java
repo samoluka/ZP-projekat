@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import org.bouncycastle.openpgp.PGPException;
@@ -86,9 +87,15 @@ public class ShowKeysGUI extends GUI {
 		JButton importPublicKey = new JButton("Uvezi javni kljuc");
 		buttonPanel.add(prev);
 		buttonPanel.add(next);
-		buttonPanel.add(deletePair);
 		buttonPanel.add(importSecretKey);
 		buttonPanel.add(importPublicKey);
+
+		JPanel deletePanel = new JPanel();
+		deletePanel.setLayout(new BoxLayout(deletePanel, BoxLayout.X_AXIS));
+		JLabel deleteLabel = new JLabel("unesite sifru privatnog kljuca za brisanje");
+		JTextField passwordField = new JTextField();
+		deletePanel.add(deleteLabel);
+		deletePanel.add(passwordField);
 
 		publicKeyInfo.setEditable(false);
 		secretKeyInfo.setEditable(false);
@@ -174,9 +181,12 @@ public class ShowKeysGUI extends GUI {
 			String message = "Doslo je do greske prilikom brisanja.";
 			try {
 				// String passHash = u.getPassword().substring(u.getUsername().length() + 5);
-				if ((new Keys()).deleteSecretKey(secretKey.getKeyID(), u.getPassword(), u)) {
+				if ((new Keys()).deleteSecretKey(secretKey.getKeyID(), passwordField.getText(), u)) {
 					secretKeyList.remove(keyIndex);
-					keyIndex = keyIndex % secretKeyList.size();
+					if (secretKeyList.size() > 0)
+						keyIndex = keyIndex % secretKeyList.size();
+					else
+						keyIndex = 0;
 					prev.setEnabled(keyIndex != 0);
 					next.setEnabled(keyIndex != secretKeyList.size() - 1);
 					message = "Obrisan je par javni privatni kljuc.";
@@ -220,6 +230,8 @@ public class ShowKeysGUI extends GUI {
 		panel.add(publicKeyPanel);
 		panel.add(secretKeyPanel);
 		panel.add(buttonPanel);
+		panel.add(deletePanel);
+		panel.add(deletePair);
 		panel.add(importedPublicKeyPanel);
 
 		JButton back = new JButton("nazad");
