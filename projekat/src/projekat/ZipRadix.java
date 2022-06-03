@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.bcpg.CompressionAlgorithmTags;
 import org.bouncycastle.openpgp.PGPCompressedData;
 import org.bouncycastle.openpgp.PGPCompressedDataGenerator;
@@ -32,5 +33,15 @@ public class ZipRadix {
         PGPCompressedData cdata = (PGPCompressedData) o;
         return cdata.getDataStream().readAllBytes();
     }*/
+	
+    public static byte[] convertToRadix64(byte[] message) throws IOException {
+    	ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+        ArmoredOutputStream armoredOutputStream = new ArmoredOutputStream(byteOutputStream);
+        armoredOutputStream.write(message);
+        armoredOutputStream.close();
+        message = byteOutputStream.toByteArray();        
+        byteOutputStream.close();
+        return message;
+    }
 	
 }
