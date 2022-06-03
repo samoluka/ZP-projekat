@@ -2,6 +2,7 @@ package projekat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.bouncycastle.bcpg.CompressionAlgorithmTags;
@@ -24,9 +25,12 @@ public class ZipRadix {
         return message;
 	}
 	
-	public static byte[] decompressMessage(byte[] message) throws IOException, PGPException{
-		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
-        return ((PGPCompressedData) objectFactory.nextObject()).getDataStream().readAllBytes();
-	}
+	/*
+	public byte[] decompressData(byte[] data) throws IOException, PGPException {
+		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(data);
+        Object o = objectFactory.nextObject();
+        PGPCompressedData cdata = (PGPCompressedData) o;
+        return cdata.getDataStream().readAllBytes();
+    }*/
 	
 }
