@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.FileDialog;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -114,7 +115,8 @@ public class MessageDecryptionGui extends GUI {
 						secretEncryptionKeyList.get(keyIndex).extractPrivateKey(new JcePBESecretKeyDecryptorBuilder()
 								.setProvider("BC").build(password.getText().toCharArray())),
 						msg);
-				String originalMsgString = String.valueOf(original);
+				String originalMsgString = new String(original, StandardCharsets.UTF_8);
+				System.out.println(originalMsgString);
 				originalMsg.setText(originalMsgString);
 				showMessage("Uspesno desifrovana poruka");
 			} catch (PGPException | IOException e1) {
@@ -143,6 +145,8 @@ public class MessageDecryptionGui extends GUI {
 		panel.add(inputPanel);
 		panel.add(KeyPanel);
 		panel.add(buttonPanel);
+		panel.add(new JLabel("desifrovana poruka: "));
+		panel.add(originalMsg);
 
 		updateInfo();
 		setPanel(panel);

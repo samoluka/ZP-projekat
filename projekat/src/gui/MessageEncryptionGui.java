@@ -3,6 +3,7 @@ package gui;
 import java.awt.FileDialog;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -19,7 +20,11 @@ import javax.swing.border.EmptyBorder;
 
 import org.bouncycastle.bcpg.SymmetricKeyAlgorithmTags;
 import org.bouncycastle.openpgp.PGPException;
+import org.bouncycastle.openpgp.PGPPrivateKey;
 import org.bouncycastle.openpgp.PGPPublicKey;
+import org.bouncycastle.openpgp.PGPSecretKey;
+import org.bouncycastle.openpgp.PGPSecretKeyRing;
+import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 import org.bouncycastle.util.Strings;
 
 import projekat.Keys;
@@ -30,10 +35,9 @@ import util.KeyFormatter;
 
 public class MessageEncryptionGui extends GUI {
 
-	private ArrayList<PGPPublicKey> publicEncryptionKeyList;
-	private ArrayList<PGPPublicKey> publicSigningKeyList;
+	private ArrayList<PGPSecretKeyRing> secretKeyList;
 	private int keyIndex = 0;
-	private JTextArea KeyInfo;
+	private JTextArea secretKeyInfo;
 
 	public MessageEncryptionGui(JPanel returnPanel, GUI parent) {
 		setParent(parent);
@@ -55,35 +59,26 @@ public class MessageEncryptionGui extends GUI {
 		outputPanel.add(output);
 		outputPanel.add(outputPath);
 
-		JPanel KeyPanel = new JPanel();
-		KeyPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		KeyPanel.setLayout(new BoxLayout(KeyPanel, BoxLayout.X_AXIS));
-		KeyInfo = new JTextArea();
-		JLabel KeyLabel = new JLabel("javni kljuc info \t");
-		KeyPanel.add(KeyLabel);
-		KeyPanel.add(KeyInfo);
-		KeyInfo.setEditable(false);
+		JPanel secretKeyPanel = new JPanel();
+		secretKeyPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		secretKeyPanel.setLayout(new BoxLayout(secretKeyPanel, BoxLayout.X_AXIS));
+		secretKeyInfo = new JTextArea();
+		JLabel secretKeyLabel = new JLabel("privatni kljuc info \t");
+		JButton secretKeyExportButton = new JButton("izvezi kljuc");
+		secretKeyPanel.add(secretKeyLabel);
+		secretKeyPanel.add(secretKeyInfo);
+		secretKeyPanel.add(secretKeyExportButton);
+		secretKeyInfo.setEditable(false);
 
-		publicEncryptionKeyList = new ArrayList<PGPPublicKey>();
-		publicSigningKeyList = new ArrayList<>();
-		new Keys().getSecretRings(u).forEachRemaining(key -> {
-			Iterator<PGPPublicKey> iter = key.getPublicKeys();
-			publicSigningKeyList.add(iter.next());
-			publicEncryptionKeyList.add(iter.next());
-		});
+		secretKeyList = new ArrayList<PGPSecretKeyRing>();
+		new Keys().getSecretRings(u).forEachRemaining(key -> secretKeyList.add(key));
 
-		// ovo nije dobro
-		// sifrovanje poruke uvezenim javnim kljucem ne radi
-		new Keys().getImportedPublicRings(u).forEachRemaining(key -> {
-			Iterator<PGPPublicKey> iter = key.getPublicKeys();
-			PGPPublicKey pKey = iter.next();
-			System.out.println(pKey.isEncryptionKey());
-			publicSigningKeyList.add(pKey);
-			publicEncryptionKeyList.add(pKey);
-//			while (iter) {
-//				System.out.println(pKey.isEncryptionKey());
-//			}
-		});
+//		List<PGPPublicKey> pub = new ArrayList<>();
+//		u.getPublicKeyRingCollection().getKeyRings().forEachRemaining(key -> {
+//			Iterator<PGPPublicKey> iter = key.getPublicKeys();
+//			iter.next();
+//			pub.add(iter.next());
+//		});
 
 		JPanel algorithmPanel = new JPanel();
 		algorithmPanel.setLayout(new BoxLayout(algorithmPanel, BoxLayout.X_AXIS));
@@ -101,11 +96,11 @@ public class MessageEncryptionGui extends GUI {
 		buttonPanel.add(prev);
 		buttonPanel.add(next);
 
-		next.setEnabled(keyIndex < publicEncryptionKeyList.size() - 1);
+		next.setEnabled(keyIndex < secretKeyList.size() - 1);
 
 		prev.addActionListener(e -> {
 			keyIndex--;
-			if (keyIndex < publicEncryptionKeyList.size() - 1) {
+			if (keyIndex < secretKeyList.size() - 1) {
 				next.setEnabled(true);
 			}
 			if (keyIndex == 0) {
@@ -118,7 +113,7 @@ public class MessageEncryptionGui extends GUI {
 			if (keyIndex > 0) {
 				prev.setEnabled(true);
 			}
-			if (keyIndex == publicEncryptionKeyList.size() - 1) {
+			if (keyIndex == secretKeyList.size() - 1) {
 				next.setEnabled(false);
 			}
 			updateInfo();
@@ -131,11 +126,19 @@ public class MessageEncryptionGui extends GUI {
 			byte[] msg = Strings.toByteArray(text.getText());
 			int alg = ((String) lengthDropDown.getSelectedItem()).equals("3DES") ? SymmetricKeyAlgorithmTags.TRIPLE_DES
 					: SymmetricKeyAlgorithmTags.AES_128;
+			System.out.println(path);
 			try (FileOutputStream fos = new FileOutputStream(path)) {
-				byte[] encrypted = MessageEncryption.getInstance().encryptMessage(publicEncryptionKeyList.get(keyIndex),
-						msg, alg);
+				Iterator<PGPPublicKey> iter = secretKeyList.get(keyIndex).getPublicKeys();
+				iter.next();
+				byte[] encrypted = MessageEncryption.getInstance().encryptMessage(iter.next(), msg, alg);
 				fos.write(encrypted);
 				showMessage("poruka je uspesno sifrovana");
+				Iterator<PGPSecretKey> secretIter = secretKeyList.get(keyIndex).getSecretKeys();
+				secretIter.next();
+				PGPPrivateKey k = secretIter.next().extractPrivateKey(
+						new JcePBESecretKeyDecryptorBuilder().setProvider("BC").build("luka123".toCharArray()));
+				String original = new String(msg, StandardCharsets.UTF_8);
+				System.out.println(original);
 			} catch (PGPException | IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -160,7 +163,7 @@ public class MessageEncryptionGui extends GUI {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.add(textPanel);
 		panel.add(outputPanel);
-		panel.add(KeyPanel);
+		panel.add(secretKeyPanel);
 		panel.add(algorithmPanel);
 		panel.add(buttonPanel);
 		updateInfo();
@@ -168,16 +171,20 @@ public class MessageEncryptionGui extends GUI {
 	}
 
 	private void updateInfo() {
-		if (keyIndex >= publicSigningKeyList.size()) {
-			KeyInfo.setText("");
+		if (keyIndex >= secretKeyList.size()) {
+			secretKeyInfo.setText("");
 			return;
 		}
-		PGPPublicKey key = publicSigningKeyList.get(keyIndex);
-		String secret = KeyFormatter.getInstance().publicKeyToString(key);
-		KeyInfo.setText(secret);
+		PGPPublicKey publicKey = secretKeyList.get(keyIndex).getPublicKey();
+		PGPSecretKey secretKey = secretKeyList.get(keyIndex).getSecretKey();
+
+		String pub = KeyFormatter.getInstance().publicKeyToString(publicKey);
+		String secret = KeyFormatter.getInstance().secretKeyToString(secretKey);
+		secretKeyInfo.setText(secret);
 	}
 
 	private void showMessage(String message) {
+		JFrame f = new JFrame();
 		JOptionPane.showMessageDialog(getPanel(), message);
 	}
 
