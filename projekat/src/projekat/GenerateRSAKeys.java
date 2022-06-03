@@ -6,7 +6,6 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.Security;
 import java.util.Date;
 
 import org.bouncycastle.bcpg.ArmoredOutputStream;
@@ -38,7 +37,6 @@ public class GenerateRSAKeys {
 	// moze argumenti da se citaju i iz currentUser
 	public Pair<PGPKeyPair, PGPKeyPair> generate(int keySize)
 			throws NoSuchProviderException, PGPException, NoSuchAlgorithmException, IOException {
-		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); // postavljanje BC provajdera
 
 //		User currentUser = UserProvider.getInstance().getUserByUsername(UserProvider.getCurrentUser()); // dohvatanje trenutnog korisnika
 
