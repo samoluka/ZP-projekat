@@ -1,6 +1,12 @@
 -poruka se sifruje javnim kljucem, treba da obuhvata skup uvezenih kljuceva i para javnog kljuca od privatnog - uradjeno
 -izbaci izvezi kljuc kod sifrovanja - uradjeno
 -kod brisanja treba da zahteva sifru za brisanje - uradjeno
--proveriti zatvaranje fajlova svuda
--sifrovanje uvezenim javnim kljucem ne radi
+-sifrovanje uvezenim javnim kljucem ne radi - uradjeno
 -ne radi kad se opet pokrene sifrovanje i desifrovanje povezano sa stavkom iznad - uradjeno
+
+
+-proveriti zatvaranje fajlova svuda
+
+
+///////////
+-promeniti metodu enkripcije da prima byte[] a ne String kako bi ceo proces bio konzistentan

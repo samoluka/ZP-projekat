@@ -45,7 +45,7 @@ public class SignedFileProcessor {
 
 		PGPLiteralData p2 = (PGPLiteralData) pgpFact.nextObject();
 
-		PGPPublicKey pubKey = new Keys().findPublicRing(ops.getKeyID(), u);
+		PGPPublicKey pubKey = new Keys().findPublicRing(ops.getKeyID(), u).getFirst();
 
 		ops.init(new JcaPGPContentVerifierBuilderProvider().setProvider("BC"), pubKey);
 

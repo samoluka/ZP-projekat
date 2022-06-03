@@ -18,6 +18,8 @@ import org.bouncycastle.openpgp.PGPSecretKeyRingCollection;
 import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
 import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 
+import util.Pair;
+
 public class Keys {
 
 	// ako se zove secret nek se i metoda tako zove cisto eto
@@ -72,19 +74,15 @@ public class Keys {
 	 * )); } }
 	 */
 
-	public PGPPublicKey findPublicRing(long keyID, User u) {
+	public Pair<PGPPublicKey, PGPPublicKey> findPublicRing(long keyID, User u) {
 		Iterator<PGPSecretKeyRing> pkrIterator = getSecretRings(u);
-		PGPPublicKey publicKey = null;
 		int found = 0;
 		while (pkrIterator.hasNext() && found == 0) {
-			publicKey = pkrIterator.next().getPublicKey();
-			if (keyID == publicKey.getKeyID()) {
-				found = 1;
-				break;
+			PGPSecretKeyRing secretRing = pkrIterator.next();
+			if (keyID == secretRing.getPublicKey().getKeyID()) {
+				Iterator<PGPPublicKey> iter = secretRing.getPublicKeys();
+				return new Pair(iter.next(), iter.next());
 			}
-		}
-		if (found == 1) {
-			return publicKey;
 		}
 		return null;
 	}
@@ -111,9 +109,10 @@ public class Keys {
 	}
 
 	public void publicKeyExport(String savePath, long keyID, User u) throws IOException {
-		PGPPublicKey publicKey = findPublicRing(keyID, u);
+		Pair<PGPPublicKey, PGPPublicKey> publicKeys = findPublicRing(keyID, u);
 		ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
-		publicKey.encode(aos);
+		publicKeys.getFirst().encode(aos);
+		publicKeys.getSecond().encode(aos);
 		aos.close();
 	}
 

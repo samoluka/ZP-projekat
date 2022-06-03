@@ -79,6 +79,7 @@ public class MessageEncryptionGui extends GUI {
 			PGPPublicKey pKey = iter.next();
 			System.out.println(pKey.isEncryptionKey());
 			publicSigningKeyList.add(pKey);
+			pKey = iter.next();
 			publicEncryptionKeyList.add(pKey);
 //			while (iter) {
 //				System.out.println(pKey.isEncryptionKey());
