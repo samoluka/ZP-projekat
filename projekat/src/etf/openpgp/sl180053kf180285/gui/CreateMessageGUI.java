@@ -224,7 +224,7 @@ public class CreateMessageGUI extends GUI {
 			next(signingNext, signingPrev, secretKeyList.size(), 'S');
 		});
 
-		JButton encrypt = new JButton("sifruj poruku");
+		JButton encrypt = new JButton("kreiraj poruku");
 		JButton back = new JButton("Nazad");
 		encrypt.addActionListener(e -> {
 			String path = outputPath.getText();

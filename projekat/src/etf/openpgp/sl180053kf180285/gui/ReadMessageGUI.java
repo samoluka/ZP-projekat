@@ -75,7 +75,7 @@ public class ReadMessageGUI extends GUI {
 			secretEncryptionKeyList.add(iter.next());
 		});
 
-		JButton encrypt = new JButton("primi poruku");
+		JButton encrypt = new JButton("procitaj poruku");
 		JPanel encryptPanel = new JPanel();
 		encryptPanel.add(encrypt);
 		JButton back = new JButton("Nazad");
