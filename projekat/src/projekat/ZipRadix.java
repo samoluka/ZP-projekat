@@ -62,7 +62,7 @@ public class ZipRadix {
 		return message;
 	}
 
-	public byte[] radixDeconversion(byte[] message) throws IOException, Exception {
+	public static byte[] radixDeconversion(byte[] message) throws IOException, Exception {
 		ByteArrayInputStream byteInputStream = new ByteArrayInputStream(message);
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
