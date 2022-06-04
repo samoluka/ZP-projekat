@@ -14,3 +14,6 @@
 - ukloniti izvoz tudjih javnih kljuceva pri listanju ?
 - margine
 - prikazati poruku uspesnosti ili greske za sve operacije
+
+- pri ponovnom pokretanju programa nisu sacuvani prethodno registrovani novi korisnici
+- ukloniti izbor kljuceva kod dekripcije, u kodu ce se na osnovu id pronaci ONAJ koji treba da se koristi
