@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Iterator;
 
 import org.bouncycastle.bcpg.BCPGOutputStream;
 import org.bouncycastle.openpgp.PGPException;
@@ -20,7 +19,6 @@ import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.PGPSignature;
 import org.bouncycastle.openpgp.PGPSignatureGenerator;
 import org.bouncycastle.openpgp.PGPSignatureList;
-import org.bouncycastle.openpgp.PGPSignatureSubpacketGenerator;
 import org.bouncycastle.openpgp.PGPUtil;
 import org.bouncycastle.openpgp.jcajce.JcaPGPObjectFactory;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentSignerBuilder;
@@ -31,7 +29,7 @@ public class SignedFileProcessor {
 	/*
 	 * verify the passed in file as being correctly signed.
 	 */
-	public boolean verifyFile(byte[] data, User u) throws Exception {
+	public boolean verifyFile(byte[] data, User u) throws IOException, PGPException {
 
 		JcaPGPObjectFactory pgpFact = new JcaPGPObjectFactory(data);
 
@@ -78,20 +76,19 @@ public class SignedFileProcessor {
 
 		sGen.init(PGPSignature.BINARY_DOCUMENT, pgpPrivKey);
 
-		Iterator it = pgpSec.getPublicKey().getUserIDs();
-		if (it.hasNext()) {
-			PGPSignatureSubpacketGenerator spGen = new PGPSignatureSubpacketGenerator();
+		BCPGOutputStream bOut = new BCPGOutputStream(bStream);
+		sGen.generateOnePassVersion(false).encode(bOut);
 
-			spGen.addSignerUserID(false, (String) it.next());
-			sGen.setHashedSubpackets(spGen.generate());
-		}
+//		Iterator it = pgpSec.getPublicKey().getUserIDs();
+//		if (it.hasNext()) {
+//			PGPSignatureSubpacketGenerator spGen = new PGPSignatureSubpacketGenerator();
+//
+//			spGen.addSignerUserID(false, (String) it.next());
+//			sGen.setHashedSubpackets(spGen.generate());
+//		}
 
 		// PGPCompressedDataGenerator cGen = new
 		// PGPCompressedDataGenerator(PGPCompressedData.ZLIB);
-
-		BCPGOutputStream bOut = new BCPGOutputStream(bStream);
-
-		sGen.generateOnePassVersion(false).encode(bOut);
 
 		PGPLiteralDataGenerator lGen = new PGPLiteralDataGenerator();
 		OutputStream outputStream = lGen.open(bOut, PGPLiteralData.BINARY, "_CONSOLE", data.length, new Date());
