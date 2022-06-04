@@ -3,6 +3,7 @@ package gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -12,14 +13,32 @@ public class FirstGui extends GUI {
 
 	FirstGui(GUI parent) {
 		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		setParent(parent);
 
 		JButton addUser = new JButton("Registracija");
+		JPanel addUserPanel = new JPanel();
+		addUserPanel.add(addUser);
+
 		JButton login = new JButton("Login");
+		JPanel loginPanel = new JPanel();
+		loginPanel.add(login);
+
 		JButton generateKeyPair = new JButton("Generisi novi par kljuca");
+		JPanel generateKeyPairPanel = new JPanel();
+		generateKeyPairPanel.add(generateKeyPair);
+
 		JButton keyOverview = new JButton("Pregled kljuceva");
-		JButton encrypt = new JButton("sifruj poruku");
+		JPanel keyOverviewPanel = new JPanel();
+		keyOverviewPanel.add(keyOverview);
+
+		JButton createButton = new JButton("kreiraj poruku");
+		JPanel createPanel = new JPanel();
+		createPanel.add(createButton);
+
 		JButton decrypt = new JButton("desifruj poruku");
+		JPanel decryptPanel = new JPanel();
+		decryptPanel.add(decrypt);
 
 		addUser.addActionListener(new ActionListener() {
 
@@ -61,12 +80,12 @@ public class FirstGui extends GUI {
 					System.err.println("Morate biti ulogovani za ovu akciju");
 			}
 		});
-		encrypt.addActionListener(new ActionListener() {
+		createButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JButton b = (JButton) e.getSource();
-				((MainGui) getParent()).setInnerPanel((new MessageEncryptionGui(panel, getParent())).getPanel());
+				((MainGui) getParent()).setInnerPanel((new CreateMessageGUI(panel, getParent())).getPanel());
 			}
 		});
 
@@ -79,12 +98,12 @@ public class FirstGui extends GUI {
 			}
 		});
 
-		panel.add(addUser);
-		panel.add(login);
-		panel.add(generateKeyPair);
-		panel.add(keyOverview);
-		panel.add(encrypt);
-		panel.add(decrypt);
+		panel.add(addUserPanel);
+		panel.add(loginPanel);
+		panel.add(generateKeyPairPanel);
+		panel.add(keyOverviewPanel);
+		panel.add(createPanel);
+		panel.add(decryptPanel);
 
 		setPanel(panel);
 

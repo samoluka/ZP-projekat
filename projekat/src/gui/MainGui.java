@@ -3,7 +3,6 @@ package gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -13,7 +12,7 @@ public class MainGui extends GUI {
 
 	public MainGui(JFrame parent) {
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, 0));
+//		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
 		mainPanel.setLayout(new GridBagLayout());
 		mainPanel.add((new FirstGui(this)).getPanel(), new GridBagConstraints());
