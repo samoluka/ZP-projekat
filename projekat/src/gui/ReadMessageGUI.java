@@ -29,7 +29,6 @@ import projekat.SignedFileProcessor;
 import projekat.User;
 import projekat.UserProvider;
 import projekat.ZipRadix;
-import util.KeyFormatter;
 
 public class ReadMessageGUI extends GUI {
 
@@ -44,30 +43,22 @@ public class ReadMessageGUI extends GUI {
 
 		User u = UserProvider.getInstance().getCurrentUser();
 
-		JLabel textLabel = new JLabel("Unesite sifru za desifrovanje");
-		JTextField password = new JTextField();
-		JPanel textPanel = new JPanel();
-		textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.X_AXIS));
-		textPanel.add(textLabel);
-		textPanel.add(password);
-
 		JButton input = new JButton("Putanja do poruke: ");
 		JLabel inputPath = new JLabel();
 		JPanel inputPanel = new JPanel();
 		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
+		inputPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		inputPanel.add(input);
 		inputPanel.add(inputPath);
 
-		JPanel KeyPanel = new JPanel();
-		KeyPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		KeyPanel.setLayout(new BoxLayout(KeyPanel, BoxLayout.X_AXIS));
-		KeyInfo = new JTextArea();
-		JLabel KeyLabel = new JLabel("privatni kljuc info \t");
-		KeyPanel.add(KeyLabel);
-		KeyPanel.add(KeyInfo);
-		KeyInfo.setEditable(false);
-
-		JLabel originalMsg = new JLabel();
+		JLabel textLabel = new JLabel("Unesite sifru za desifrovanje:");
+		JTextField password = new JTextField();
+		password.setColumns(20);
+		JPanel textPanel = new JPanel();
+		textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.X_AXIS));
+		textPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		textPanel.add(textLabel);
+		textPanel.add(password);
 
 		secretEncryptionKeyList = new ArrayList<>();
 		secretSigningKeyList = new ArrayList<>();
@@ -77,39 +68,18 @@ public class ReadMessageGUI extends GUI {
 			secretEncryptionKeyList.add(iter.next());
 		});
 
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-		JButton prev = new JButton("prethodni");
-		prev.setEnabled(false);
-		JButton next = new JButton("sledeci");
-		buttonPanel.add(prev);
-		buttonPanel.add(next);
-
-		next.setEnabled(keyIndex < secretEncryptionKeyList.size() - 1);
-
-		prev.addActionListener(e -> {
-			keyIndex--;
-			if (keyIndex < secretEncryptionKeyList.size() - 1) {
-				next.setEnabled(true);
-			}
-			if (keyIndex == 0) {
-				prev.setEnabled(false);
-			}
-			updateInfo();
-		});
-		next.addActionListener(e -> {
-			keyIndex++;
-			if (keyIndex > 0) {
-				prev.setEnabled(true);
-			}
-			if (keyIndex == secretEncryptionKeyList.size() - 1) {
-				next.setEnabled(false);
-			}
-			updateInfo();
-		});
-
 		JButton encrypt = new JButton("desifruj poruku");
+		JPanel encryptPanel = new JPanel();
+		encryptPanel.add(encrypt);
 		JButton back = new JButton("Nazad");
+		JPanel backPanel = new JPanel();
+		backPanel.add(back);
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		buttonPanel.add(encryptPanel);
+		buttonPanel.add(backPanel);
+
 		encrypt.addActionListener(e -> {
 			String path = inputPath.getText();
 			try (FileOutputStream fos = new FileOutputStream("izlaz.txt")) {
@@ -122,7 +92,7 @@ public class ReadMessageGUI extends GUI {
 				// 2.zipovanje
 
 				long KeyId = 1L;
-				PGPSecretKey secretKey = new Keys().findPrivateRing(KeyId, u).getSecretKey();
+				// PGPSecretKey secretKey = new Keys().findPrivateRing(KeyId, u).getSecretKey();
 				PGPPrivateKey privateKey = secretEncryptionKeyList.get(keyIndex).extractPrivateKey(
 						new JcePBESecretKeyDecryptorBuilder().setProvider("BC").build("luka123".toCharArray()));
 				msg = MessageDecryption.getInstance().decryptMessage(privateKey, msg);
@@ -158,29 +128,12 @@ public class ReadMessageGUI extends GUI {
 			((MainGui) getParent()).setInnerPanel(returnPanel);
 		});
 
-		buttonPanel.add(encrypt);
-		buttonPanel.add(back);
-
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(textPanel);
 		panel.add(inputPanel);
-		panel.add(KeyPanel);
+		panel.add(textPanel);
 		panel.add(buttonPanel);
-		panel.add(new JLabel("desifrovana poruka: "));
-		panel.add(originalMsg);
 
-		updateInfo();
 		setPanel(panel);
-	}
-
-	private void updateInfo() {
-		if (keyIndex >= secretSigningKeyList.size()) {
-			KeyInfo.setText("");
-			return;
-		}
-		PGPSecretKey key = secretSigningKeyList.get(keyIndex);
-		String secret = KeyFormatter.getInstance().secretKeyToString(key);
-		KeyInfo.setText(secret);
 	}
 
 	private void showMessage(String message) {
