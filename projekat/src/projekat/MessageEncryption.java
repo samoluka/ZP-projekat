@@ -6,8 +6,10 @@ import java.io.OutputStream;
 import java.security.SecureRandom;
 
 import org.bouncycastle.openpgp.PGPEncryptedDataGenerator;
+import org.bouncycastle.openpgp.PGPEncryptedDataList;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKey;
+import org.bouncycastle.openpgp.jcajce.JcaPGPObjectFactory;
 import org.bouncycastle.openpgp.operator.jcajce.JcePGPDataEncryptorBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyKeyEncryptionMethodGenerator;
 
@@ -39,5 +41,18 @@ public class MessageEncryption {
 		// finish the encryption
 		cOut.close();
 		return encOut.toByteArray();
+	}
+
+	public boolean isEncrypted(byte[] message) {
+		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
+		Object enc = null;
+		try {
+			enc = objectFactory.nextObject();
+		} catch (IOException e) {
+			return false;
+		}
+		if (enc instanceof PGPEncryptedDataList)
+			return true;
+		return false;
 	}
 }

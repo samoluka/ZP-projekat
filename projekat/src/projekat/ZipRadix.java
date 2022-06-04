@@ -10,7 +10,6 @@ import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.bcpg.CompressionAlgorithmTags;
 import org.bouncycastle.openpgp.PGPCompressedData;
 import org.bouncycastle.openpgp.PGPCompressedDataGenerator;
-import org.bouncycastle.openpgp.PGPEncryptedDataList;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPLiteralData;
 import org.bouncycastle.openpgp.PGPObjectFactory;
@@ -87,20 +86,7 @@ public class ZipRadix {
 		return buffer.toByteArray();
 	}
 	// byte[] dencodeBytes = org.bouncycastle.util.encoders.Base64.decode(message);
-	// return dencodeBytes;
 
-	public static boolean isEncrypted(byte[] message) {
-		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
-		Object enc = null;
-		try {
-			enc = objectFactory.nextObject();
-		} catch (IOException e) {
-			return false;
-		}
-		if (enc instanceof PGPEncryptedDataList)
-			return true;
-		return false;
-	}
 
 	public static boolean checkIfSigned(byte[] message) throws IOException, PGPException {
 		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);

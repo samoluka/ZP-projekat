@@ -19,12 +19,11 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import org.bouncycastle.openpgp.PGPException;
-import org.bouncycastle.openpgp.PGPPrivateKey;
 import org.bouncycastle.openpgp.PGPSecretKey;
-import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 
 import projekat.Keys;
 import projekat.MessageDecryption;
+import projekat.MessageEncryption;
 import projekat.SignedFileProcessor;
 import projekat.User;
 import projekat.UserProvider;
@@ -85,30 +84,24 @@ public class ReadMessageGUI extends GUI {
 			try (FileOutputStream fos = new FileOutputStream("izlaz.txt")) {
 				byte[] msg = Files.readAllBytes(Paths.get(path));
 
+				// 1.unradix
 				msg = ZipRadix.radixDeconversion(msg);
 
-				// 1.auth
+				// 2.decrypt
+				if (MessageEncryption.getInstance().isEncrypted(msg))
+					msg = MessageDecryption.getInstance().decryptMessage(u, password.getText(), msg);
 
-				// 2.zipovanje
-
-				long KeyId = 1L;
-				// PGPSecretKey secretKey = new Keys().findPrivateRing(KeyId, u).getSecretKey();
-				PGPPrivateKey privateKey = secretEncryptionKeyList.get(keyIndex).extractPrivateKey(
-						new JcePBESecretKeyDecryptorBuilder().setProvider("BC").build("1234".toCharArray()));
-				msg = MessageDecryption.getInstance().decryptMessage(privateKey, msg);
-
+				// 3.unzip
 				if (ZipRadix.checkIfCompressed(msg))
 					msg = ZipRadix.decompressData(msg);
-
+				
 				if (ZipRadix.checkIfSigned(msg)) {
-					System.out.println(new SignedFileProcessor().verifyFile(msg, u));
+					// 4.veriySigning
+					showMessage(new SignedFileProcessor().verifyFile(msg, u));
 
+					// 5.unsign
 					msg = new SignedFileProcessor().unsignedMessage(msg);
 				}
-
-				// 3.enkripcija
-
-				// 4.radix64
 
 				fos.write(msg);
 				showMessage("poruka je uspesno procitana");
