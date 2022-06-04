@@ -87,6 +87,26 @@ public class Keys {
 		return null;
 	}
 
+	public Pair<PGPPublicKey, PGPPublicKey> findPublicRingWithImported(long keyID, User u) {
+		Iterator<PGPSecretKeyRing> pkrIterator = getSecretRings(u);
+		while (pkrIterator.hasNext()) {
+			PGPSecretKeyRing secretRing = pkrIterator.next();
+			if (keyID == secretRing.getPublicKey().getKeyID()) {
+				Iterator<PGPPublicKey> iter = secretRing.getPublicKeys();
+				return new Pair<PGPPublicKey, PGPPublicKey>(iter.next(), iter.next());
+			}
+		}
+		Iterator<PGPPublicKeyRing> publicIter = getImportedPublicRings(u);
+		while (publicIter.hasNext()) {
+			PGPPublicKeyRing publicRing = publicIter.next();
+			if (keyID == publicRing.getPublicKey().getKeyID()) {
+				Iterator<PGPPublicKey> iter = publicRing.getPublicKeys();
+				return new Pair<PGPPublicKey, PGPPublicKey>(iter.next(), iter.next());
+			}
+		}
+		return null;
+	}
+
 	public PGPSecretKeyRing findPrivateRing(long keyID, User u) {
 		Iterator<PGPSecretKeyRing> pkrIterator = getSecretRings(u);
 		PGPSecretKeyRing privateKeyRing = null;

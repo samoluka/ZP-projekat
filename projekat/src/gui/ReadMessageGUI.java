@@ -50,6 +50,14 @@ public class ReadMessageGUI extends GUI {
 		inputPanel.add(input);
 		inputPanel.add(inputPath);
 
+		JButton output = new JButton("Putanja izlaza: ");
+		JLabel outputPath = new JLabel();
+		JPanel outputPanel = new JPanel();
+		outputPanel.setLayout(new BoxLayout(outputPanel, BoxLayout.X_AXIS));
+		outputPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		outputPanel.add(output);
+		outputPanel.add(outputPath);
+
 		JLabel textLabel = new JLabel("Unesite sifru za desifrovanje:");
 		JTextField password = new JTextField();
 		password.setColumns(20);
@@ -67,7 +75,7 @@ public class ReadMessageGUI extends GUI {
 			secretEncryptionKeyList.add(iter.next());
 		});
 
-		JButton encrypt = new JButton("desifruj poruku");
+		JButton encrypt = new JButton("primi poruku");
 		JPanel encryptPanel = new JPanel();
 		encryptPanel.add(encrypt);
 		JButton back = new JButton("Nazad");
@@ -81,7 +89,7 @@ public class ReadMessageGUI extends GUI {
 
 		encrypt.addActionListener(e -> {
 			String path = inputPath.getText();
-			try (FileOutputStream fos = new FileOutputStream("izlaz.txt")) {
+			try (FileOutputStream fos = new FileOutputStream(outputPath.getText())) {
 				byte[] msg = Files.readAllBytes(Paths.get(path));
 
 				// 1.unradix
@@ -119,12 +127,22 @@ public class ReadMessageGUI extends GUI {
 			String filename = fileChooser.getDirectory() + fileChooser.getFile();
 			inputPath.setText(filename);
 		});
+		output.addActionListener(e -> {
+			JFrame parentFrame = new JFrame();
+			FileDialog fileChooser = new FileDialog(parentFrame);
+			fileChooser.setTitle("odaberite putanju za cuvanje poruke");
+			fileChooser.setVisible(true);
+			String filename = fileChooser.getDirectory() + fileChooser.getFile();
+			inputPath.setText(filename);
+		});
+
 		back.addActionListener(e -> {
 			((MainGui) getParent()).setInnerPanel(returnPanel);
 		});
 
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.add(inputPanel);
+		panel.add(outputPanel);
 		panel.add(textPanel);
 		panel.add(buttonPanel);
 
