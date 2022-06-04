@@ -3,6 +3,7 @@ package projekat;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.bouncycastle.bcpg.ArmoredOutputStream;
@@ -11,9 +12,17 @@ import org.bouncycastle.openpgp.PGPCompressedData;
 import org.bouncycastle.openpgp.PGPCompressedDataGenerator;
 import org.bouncycastle.openpgp.PGPEncryptedDataList;
 import org.bouncycastle.openpgp.PGPException;
+import org.bouncycastle.openpgp.PGPLiteralData;
 import org.bouncycastle.openpgp.PGPObjectFactory;
+import org.bouncycastle.openpgp.PGPOnePassSignature;
+import org.bouncycastle.openpgp.PGPOnePassSignatureList;
+import org.bouncycastle.openpgp.PGPPublicKey;
+import org.bouncycastle.openpgp.PGPPublicKeyRing;
+import org.bouncycastle.openpgp.PGPSignature;
+import org.bouncycastle.openpgp.PGPSignatureList;
 import org.bouncycastle.openpgp.PGPUtil;
 import org.bouncycastle.openpgp.jcajce.JcaPGPObjectFactory;
+import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProvider;
 import org.bouncycastle.util.io.Streams;
 
 public class ZipRadix {
@@ -79,18 +88,32 @@ public class ZipRadix {
 	}
 	// byte[] dencodeBytes = org.bouncycastle.util.encoders.Base64.decode(message);
 	// return dencodeBytes;
-	
+
 	public static boolean isEncrypted(byte[] message) {
-    	JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
-        Object enc = null;
+		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
+		Object enc = null;
 		try {
 			enc = objectFactory.nextObject();
 		} catch (IOException e) {
 			return false;
 		}
-        if (enc instanceof PGPEncryptedDataList) 
-        	return true;
-        return false;
-    }
+		if (enc instanceof PGPEncryptedDataList)
+			return true;
+		return false;
+	}
+
+	public static boolean checkIfSigned(byte[] message) throws IOException, PGPException {
+		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
+		Object o = null;
+		try {
+			o = objectFactory.nextObject();
+		} catch (IOException e) {
+			return false;
+		}
+		if (o instanceof PGPOnePassSignatureList) {
+				return true;
+			}
+		return false;
+	}
 
 }

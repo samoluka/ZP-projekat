@@ -94,15 +94,17 @@ public class ReadMessageGUI extends GUI {
 				long KeyId = 1L;
 				// PGPSecretKey secretKey = new Keys().findPrivateRing(KeyId, u).getSecretKey();
 				PGPPrivateKey privateKey = secretEncryptionKeyList.get(keyIndex).extractPrivateKey(
-						new JcePBESecretKeyDecryptorBuilder().setProvider("BC").build("luka123".toCharArray()));
+						new JcePBESecretKeyDecryptorBuilder().setProvider("BC").build("1234".toCharArray()));
 				msg = MessageDecryption.getInstance().decryptMessage(privateKey, msg);
 
 				if (ZipRadix.checkIfCompressed(msg))
 					msg = ZipRadix.decompressData(msg);
 
-				System.out.println(new SignedFileProcessor().verifyFile(msg, u));
+				if (ZipRadix.checkIfSigned(msg)) {
+					System.out.println(new SignedFileProcessor().verifyFile(msg, u));
 
-				msg = new SignedFileProcessor().unsignedMessage(msg);
+					msg = new SignedFileProcessor().unsignedMessage(msg);
+				}
 
 				// 3.enkripcija
 
