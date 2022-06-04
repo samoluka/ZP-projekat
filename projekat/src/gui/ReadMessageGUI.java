@@ -94,8 +94,8 @@ public class ReadMessageGUI extends GUI {
 				// 3.unzip
 				if (ZipRadix.checkIfCompressed(msg))
 					msg = ZipRadix.decompressData(msg);
-				
-				if (ZipRadix.checkIfSigned(msg)) {
+
+				if (new SignedFileProcessor().checkIfSigned(msg)) {
 					// 4.veriySigning
 					showMessage(new SignedFileProcessor().verifyFile(msg, u));
 

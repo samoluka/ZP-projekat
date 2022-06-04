@@ -120,4 +120,18 @@ public class SignedFileProcessor {
 
 		return data;
 	}
+
+	public boolean checkIfSigned(byte[] message) throws IOException, PGPException {
+		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
+		Object o = null;
+		try {
+			o = objectFactory.nextObject();
+		} catch (IOException e) {
+			return false;
+		}
+		if (o instanceof PGPOnePassSignatureList) {
+			return true;
+		}
+		return false;
+	}
 }

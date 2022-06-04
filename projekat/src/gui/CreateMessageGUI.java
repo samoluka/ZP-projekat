@@ -243,7 +243,6 @@ public class CreateMessageGUI extends GUI {
 					// 1.auth
 					msg = (new SignedFileProcessor()).signFile(msg, signingPassword.getText(),
 							secretKeyList.get(signingKeyIndex));
-					//System.out.println(new SignedFileProcessor().verifyFile(msg, u));
 				}
 
 				if (zipCheckBox.isSelected()) {
@@ -259,9 +258,7 @@ public class CreateMessageGUI extends GUI {
 
 				if (radixCheckBox.isSelected()) {
 					// 4.radix64
-
 					msg = ZipRadix.convertToRadix64(msg);
-	
 				}
 
 				fos.write(msg);
