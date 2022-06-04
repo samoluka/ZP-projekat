@@ -133,7 +133,7 @@ public class ReadMessageGUI extends GUI {
 			fileChooser.setTitle("odaberite putanju za cuvanje poruke");
 			fileChooser.setVisible(true);
 			String filename = fileChooser.getDirectory() + fileChooser.getFile();
-			inputPath.setText(filename);
+			outputPath.setText(filename);
 		});
 
 		back.addActionListener(e -> {
