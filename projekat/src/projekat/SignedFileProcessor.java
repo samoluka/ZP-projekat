@@ -24,11 +24,20 @@ import org.bouncycastle.openpgp.jcajce.JcaPGPObjectFactory;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentSignerBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProvider;
 import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
+import org.bouncycastle.util.io.Streams;
 
 public class SignedFileProcessor {
 	/*
 	 * verify the passed in file as being correctly signed.
 	 */
+
+	public byte[] unsignedMessage(byte[] data) throws IOException {
+		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(data);
+		objectFactory.nextObject();
+		PGPLiteralData literalData = (PGPLiteralData) objectFactory.nextObject();
+		return Streams.readAll(literalData.getInputStream());
+	}
+
 	public boolean verifyFile(byte[] data, User u) throws IOException, PGPException {
 
 		JcaPGPObjectFactory pgpFact = new JcaPGPObjectFactory(data);

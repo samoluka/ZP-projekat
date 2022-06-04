@@ -6,7 +6,6 @@ import java.io.InputStream;
 import org.bouncycastle.openpgp.PGPEncryptedData;
 import org.bouncycastle.openpgp.PGPEncryptedDataList;
 import org.bouncycastle.openpgp.PGPException;
-import org.bouncycastle.openpgp.PGPLiteralData;
 import org.bouncycastle.openpgp.PGPObjectFactory;
 import org.bouncycastle.openpgp.PGPPrivateKey;
 import org.bouncycastle.openpgp.PGPPublicKeyEncryptedData;
@@ -51,10 +50,10 @@ public class MessageDecryption {
 		// check data decrypts okay
 		if (encData.verify()) {
 			// parse out literal data
-			PGPObjectFactory litFact = new JcaPGPObjectFactory(literalData);
-			PGPLiteralData litData = (PGPLiteralData) litFact.nextObject();
-			byte[] data = Streams.readAll(litData.getInputStream());
-			return data;
+//			PGPObjectFactory litFact = new JcaPGPObjectFactory(literalData);
+//			PGPLiteralData litData = (PGPLiteralData) litFact.nextObject();
+//			byte[] data = Streams.readAll(litData.getInputStream());
+			return literalData;
 		}
 		throw new IllegalStateException("modification check failed");
 	}
