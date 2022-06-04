@@ -16,13 +16,9 @@ public class LoginCreateUserGui extends GUI {
 
 	private int state;
 	private JPanel usernamePanel;
-	private JPanel passwordPanel;
-	private JPanel mailPanel;
 	private JTextField username;
 	private JTextField password;
-	private JTextField mail;
 	private JLabel passwordLabel;
-	private JLabel mailLabel;
 	private JLabel usernameLabel;
 	private JLabel messageLabel = new JLabel();
 
@@ -38,27 +34,18 @@ public class LoginCreateUserGui extends GUI {
 		usernamePanel = new JPanel();
 		usernamePanel.setLayout(new BoxLayout(usernamePanel, 0));
 
-		passwordPanel = new JPanel();
-		passwordPanel.setLayout(new BoxLayout(passwordPanel, 0));
-
-		mailPanel = new JPanel();
-		mailPanel.setLayout(new BoxLayout(mailPanel, 0));
-		mailPanel.setVisible(state == 0);
-
 		username = new JTextField(30);
 		usernameLabel = new JLabel("korisnicko ime: ");
 		usernamePanel.add(usernameLabel);
 		usernamePanel.add(username);
 
+		JPanel passwordPanel = new JPanel();
+		passwordPanel.setLayout(new BoxLayout(passwordPanel, 0));
+
 		password = new JTextField(30);
 		passwordLabel = new JLabel("sifra: ");
 		passwordPanel.add(passwordLabel);
 		passwordPanel.add(password);
-
-		mail = new JTextField(30);
-		mailLabel = new JLabel("e-mail: ");
-		mailPanel.add(mailLabel);
-		mailPanel.add(mail);
 
 		JButton actionButton = new JButton(state == 0 ? "Registracija" : "Login");
 		JButton backButton = new JButton("Nazad");
@@ -76,7 +63,6 @@ public class LoginCreateUserGui extends GUI {
 		});
 
 		panel.add(usernamePanel);
-		panel.add(mailPanel);
 		panel.add(passwordPanel);
 		panel.add(actionButton);
 		panel.add(backButton);
@@ -108,8 +94,9 @@ public class LoginCreateUserGui extends GUI {
 		String uName = username.getText();
 		String pass = password.getText();
 		UserProvider userProvider = UserProvider.getInstance();
-		if (userProvider.createUser(uName, mail.getText(), pass)) {
+		if (userProvider.createUser(uName, pass)) {
 			messageLabel.setText("Uspesno kreiran korisnik");
+
 		} else {
 			messageLabel.setText("Korisnik vec postoji");
 		}

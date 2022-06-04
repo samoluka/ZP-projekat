@@ -24,7 +24,7 @@ public class FirstGui extends GUI {
 		JPanel loginPanel = new JPanel();
 		loginPanel.add(login);
 
-		JButton generateKeyPair = new JButton("Generisi novi par kljuca");
+		JButton generateKeyPair = new JButton("Generisi novi par kljuceva");
 		JPanel generateKeyPairPanel = new JPanel();
 		generateKeyPairPanel.add(generateKeyPair);
 

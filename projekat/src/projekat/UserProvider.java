@@ -2,6 +2,8 @@ package projekat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +21,12 @@ public class UserProvider {
 			Scanner myReader = new Scanner(myObj);
 			while (myReader.hasNextLine()) {
 				String[] data = myReader.nextLine().split(";");
-				instance.allUsers.add(new User(data[0], data[1], data[2]));
+				User u = new User(data[0], data[1]);
+				u.setPassword(data[1]);
+				instance.allUsers.add(u);
 			}
-			instance.currentUser = instance.allUsers.get(0);
+			if (instance.allUsers.size() > 0)
+				instance.currentUser = instance.allUsers.get(0);
 			myReader.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
@@ -50,12 +55,23 @@ public class UserProvider {
 		return allUsers;
 	}
 
-	public boolean createUser(String username, String mail, String password) {
+	public boolean createUser(String username, String password) {
 		if (allUsers.parallelStream().anyMatch((User user) -> {
 			return user.getUsername().equals(username);
 		}))
 			return false;
-		allUsers.add(new User(username, mail, password));
+		User u = new User(username, password);
+		allUsers.add(u);
+		try {
+			File myObj = new File(System.getProperty("user.dir") + "/users/users.txt");
+			FileWriter fw = new FileWriter(myObj, true);
+			fw.write(String.format("%s;%s\n", u.getUsername(), u.getPassword()).toCharArray());
+			fw.close();
+		} catch (IOException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+
 		return true;
 	}
 

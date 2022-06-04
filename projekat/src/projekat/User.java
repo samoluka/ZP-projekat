@@ -14,23 +14,12 @@ import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
 public class User {
 	private String username;
 	private String password;
-	private String email;
 
-//	private PGPPublicKeyRingCollection publicKeyRingCollection;
 	private PGPSecretKeyRingCollection secretKeyRingCollection;
 	private PGPPublicKeyRingCollection importedPublicKeyRingCollection;
 
-//	private File publicKeyRingDirectory;
 	private File secretKeyRingDirectory;
 	private File importedPublicKeyRingDirectory;
-
-//	public File getPublicKeyRingDirectory() {
-//		return publicKeyRingDirectory;
-//	}
-//
-//	public void setPublicKeyRingDirectory(File publicKeyRingDirectory) {
-//		this.publicKeyRingDirectory = publicKeyRingDirectory;
-//	}
 
 	public File getSecretKeyRingDirectory() {
 		return secretKeyRingDirectory;
@@ -39,14 +28,6 @@ public class User {
 	public void setSecretKeyRingDirectory(File secretKeyRingDirectory) {
 		this.secretKeyRingDirectory = secretKeyRingDirectory;
 	}
-
-//	public PGPPublicKeyRingCollection getPublicKeyRingCollection() {
-//		return publicKeyRingCollection;
-//	}
-//
-//	public void setPublicKeyRingCollection(PGPPublicKeyRingCollection publicKeyRingCollection) {
-//		this.publicKeyRingCollection = publicKeyRingCollection;
-//	}
 
 	public PGPSecretKeyRingCollection getSecretKeyRingCollection() {
 		return secretKeyRingCollection;
@@ -88,32 +69,18 @@ public class User {
 		this.password = password;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public User(String username, String email, String password) {
+	public User(String username, String password) {
 		this.username = username;
 		this.password = username + ThreadLocalRandom.current().nextInt(10000, 99999 + 1) + HashText.getSHA(password);
-		this.email = email;
 
 		String path = System.getProperty("user.dir") + "/keyRingCollections/" + username;
 		(new File(path)).mkdirs();
 
 		try {
-//			publicKeyRingDirectory = new File(path + "\\publicKeyRing.asc");
-//			publicKeyRingDirectory.createNewFile();
 			secretKeyRingDirectory = new File(path + "\\privateKeyRing.asc");
 			secretKeyRingDirectory.createNewFile();
 			importedPublicKeyRingDirectory = new File(path + "\\importedPublicKeyRing.asc");
 			importedPublicKeyRingDirectory.createNewFile();
-//			publicKeyRingCollection = new PGPPublicKeyRingCollection(
-//					new ArmoredInputStream(new FileInputStream(publicKeyRingDirectory)),
-//					new BcKeyFingerprintCalculator());
 			secretKeyRingCollection = new PGPSecretKeyRingCollection(
 					new ArmoredInputStream(new FileInputStream(secretKeyRingDirectory)),
 					new BcKeyFingerprintCalculator());

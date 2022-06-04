@@ -64,7 +64,6 @@ public class ShowKeysGUI extends GUI {
 		importedPublicKeyPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		importedPublicKeyPanel.setLayout(new BoxLayout(importedPublicKeyPanel, BoxLayout.X_AXIS));
 		JLabel importedPublicKeyLabel = new JLabel("javni kljuc info \t");
-		JButton importedPublicKeyExportButton = new JButton("izvezi kljuc");
 		importedPublicKeyPanel.add(importedPublicKeyLabel);
 		importedPublicKeyPanel.add(importedPublicKeyInfo);
 		JPanel importedPublicKeyButtonPanel = new JPanel();
@@ -72,7 +71,6 @@ public class ShowKeysGUI extends GUI {
 		JButton importedPrev = new JButton("prethodni");
 		importedPrev.setEnabled(false);
 		JButton importedNext = new JButton("sledeci");
-		importedPublicKeyButtonPanel.add(importedPublicKeyExportButton);
 		importedPublicKeyButtonPanel.add(importedPrev);
 		importedPublicKeyButtonPanel.add(importedNext);
 		importedPublicKeyPanel.add(importedPublicKeyButtonPanel);
