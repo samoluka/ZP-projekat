@@ -73,7 +73,15 @@ public class MessageEncryptionGui extends GUI {
 		secretKeyList = new ArrayList<>();
 		new Keys().getSecretRings(u).forEachRemaining(key -> {
 			Iterator<PGPPublicKey> iter = key.getPublicKeys();
-			secretKeyList.add(key.getSecretKey());
+			Iterator<PGPSecretKey> secretIter = key.getSecretKeys();
+			while (secretIter.hasNext()) {
+				PGPSecretKey kSec = secretIter.next();
+				// System.out.println(kSec.isMasterKey());
+				if (kSec.isMasterKey()) {
+					secretKeyList.add(kSec);
+					break;
+				}
+			}
 			publicSigningKeyList.add(iter.next());
 			publicEncryptionKeyList.add(iter.next());
 		});
@@ -142,16 +150,15 @@ public class MessageEncryptionGui extends GUI {
 //				long id = 3649143097931425584L; // ID priv kljuca za autentikaciju
 //				PGPSecretKey secretKey = ((new Keys()).findPrivateRing(id, u)).getSecretKey();
 				// 1.auth
-				byte[] encrypted = (new SignedFileProcessor()).signFile(msg, "luka123", secretKeyList.get(keyIndex));
-				System.out.println(new SignedFileProcessor().verifyFile(encrypted, u));
+				msg = (new SignedFileProcessor()).signFile(msg, "luka123", secretKeyList.get(keyIndex));
+				System.out.println(new SignedFileProcessor().verifyFile(msg, u));
 //				// 2.zipovanje
-				encrypted = ZipRadix.compressMessage(encrypted);
+				msg = ZipRadix.compressMessage(msg);
 				// 3.enkripcija
-				encrypted = MessageEncryption.getInstance().encryptMessage(publicEncryptionKeyList.get(keyIndex), msg,
-						alg);
+				msg = MessageEncryption.getInstance().encryptMessage(publicEncryptionKeyList.get(keyIndex), msg, alg);
 				// 4.radix64
-				encrypted = ZipRadix.convertToRadix64(encrypted);
-				fos.write(encrypted);
+				msg = ZipRadix.convertToRadix64(msg);
+				fos.write(msg);
 				showMessage("poruka je uspesno sifrovana");
 			} catch (IOException | PGPException e1) {
 				// TODO Auto-generated catch block
