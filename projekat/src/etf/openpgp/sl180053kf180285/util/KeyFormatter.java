@@ -1,4 +1,4 @@
-package util;
+package etf.openpgp.sl180053kf180285.util;
 
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPSecretKey;

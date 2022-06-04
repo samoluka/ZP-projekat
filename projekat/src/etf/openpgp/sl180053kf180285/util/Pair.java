@@ -1,4 +1,4 @@
-package util;
+package etf.openpgp.sl180053kf180285.util;
 
 public class Pair<T1, T2> {
 	private T1 first;

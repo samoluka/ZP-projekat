@@ -1,4 +1,4 @@
-package gui;
+package etf.openpgp.sl180053kf180285.gui;
 
 import java.awt.Color;
 
@@ -8,9 +8,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import projekat.HashText;
-import projekat.User;
-import projekat.UserProvider;
+import etf.openpgp.sl180053kf180285.projekat.HashText;
+import etf.openpgp.sl180053kf180285.projekat.User;
+import etf.openpgp.sl180053kf180285.projekat.UserProvider;
 
 public class LoginCreateUserGui extends GUI {
 

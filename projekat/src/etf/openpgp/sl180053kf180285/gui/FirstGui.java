@@ -1,4 +1,4 @@
-package gui;
+package etf.openpgp.sl180053kf180285.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,7 +7,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import projekat.UserProvider;
+import etf.openpgp.sl180053kf180285.projekat.UserProvider;
 
 public class FirstGui extends GUI {
 

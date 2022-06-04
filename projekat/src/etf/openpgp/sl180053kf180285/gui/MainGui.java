@@ -1,4 +1,4 @@
-package gui;
+package etf.openpgp.sl180053kf180285.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

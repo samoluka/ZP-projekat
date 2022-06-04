@@ -1,4 +1,4 @@
-package projekat;
+package etf.openpgp.sl180053kf180285.projekat;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +18,7 @@ import org.bouncycastle.openpgp.PGPSecretKeyRingCollection;
 import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
 import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 
-import util.Pair;
+import etf.openpgp.sl180053kf180285.util.Pair;
 
 public class Keys {
 

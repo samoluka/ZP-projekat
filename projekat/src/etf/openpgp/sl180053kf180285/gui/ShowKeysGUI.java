@@ -1,4 +1,4 @@
-package gui;
+package etf.openpgp.sl180053kf180285.gui;
 
 import java.awt.FileDialog;
 import java.io.IOException;
@@ -21,10 +21,10 @@ import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
 
-import projekat.Keys;
-import projekat.User;
-import projekat.UserProvider;
-import util.KeyFormatter;
+import etf.openpgp.sl180053kf180285.projekat.Keys;
+import etf.openpgp.sl180053kf180285.projekat.User;
+import etf.openpgp.sl180053kf180285.projekat.UserProvider;
+import etf.openpgp.sl180053kf180285.util.KeyFormatter;
 
 public class ShowKeysGUI extends GUI {
 

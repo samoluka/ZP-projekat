@@ -1,4 +1,4 @@
-package gui;
+package etf.openpgp.sl180053kf180285.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,10 +13,10 @@ import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
 
-import projekat.User;
-import projekat.UserProvider;
-import util.KeyFormatter;
-import util.Pair;
+import etf.openpgp.sl180053kf180285.projekat.User;
+import etf.openpgp.sl180053kf180285.projekat.UserProvider;
+import etf.openpgp.sl180053kf180285.util.KeyFormatter;
+import etf.openpgp.sl180053kf180285.util.Pair;
 
 public class KeyPairViewGUI extends GUI {
 

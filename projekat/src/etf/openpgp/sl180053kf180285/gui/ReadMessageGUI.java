@@ -1,4 +1,4 @@
-package gui;
+package etf.openpgp.sl180053kf180285.gui;
 
 import java.awt.FileDialog;
 import java.io.FileOutputStream;
@@ -21,13 +21,13 @@ import javax.swing.border.EmptyBorder;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPSecretKey;
 
-import projekat.Keys;
-import projekat.MessageDecryption;
-import projekat.MessageEncryption;
-import projekat.SignedFileProcessor;
-import projekat.User;
-import projekat.UserProvider;
-import projekat.ZipRadix;
+import etf.openpgp.sl180053kf180285.projekat.Keys;
+import etf.openpgp.sl180053kf180285.projekat.MessageDecryption;
+import etf.openpgp.sl180053kf180285.projekat.MessageEncryption;
+import etf.openpgp.sl180053kf180285.projekat.SignedFileProcessor;
+import etf.openpgp.sl180053kf180285.projekat.User;
+import etf.openpgp.sl180053kf180285.projekat.UserProvider;
+import etf.openpgp.sl180053kf180285.projekat.ZipRadix;
 
 public class ReadMessageGUI extends GUI {
 

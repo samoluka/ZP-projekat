@@ -1,4 +1,4 @@
-package projekat;
+package etf.openpgp.sl180053kf180285.projekat;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import org.bouncycastle.openpgp.operator.jcajce.JcaPGPDigestCalculatorProviderBu
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPKeyPair;
 import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyEncryptorBuilder;
 
-import util.Pair;
+import etf.openpgp.sl180053kf180285.util.Pair;
 
 public class GenerateRSAKeys {
 

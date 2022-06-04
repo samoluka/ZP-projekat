@@ -1,4 +1,4 @@
-package gui;
+package etf.openpgp.sl180053kf180285.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,10 +16,10 @@ import javax.swing.JTextField;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPKeyPair;
 
-import projekat.GenerateRSAKeys;
-import projekat.User;
-import projekat.UserProvider;
-import util.Pair;
+import etf.openpgp.sl180053kf180285.projekat.GenerateRSAKeys;
+import etf.openpgp.sl180053kf180285.projekat.User;
+import etf.openpgp.sl180053kf180285.projekat.UserProvider;
+import etf.openpgp.sl180053kf180285.util.Pair;
 
 public class GenereteKeyPairGUI extends GUI {
 

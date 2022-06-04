@@ -1,10 +1,10 @@
-package projekat;
+package etf.openpgp.sl180053kf180285.projekat;
 
 import java.security.Security;
 
 import javax.swing.JFrame;
 
-import gui.MainGui;
+import etf.openpgp.sl180053kf180285.gui.MainGui;
 
 public class Main {
 

@@ -1,4 +1,4 @@
-package projekat;
+package etf.openpgp.sl180053kf180285.projekat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
