@@ -44,13 +44,26 @@ public class ZipRadix {
 		return false;
 	}
 
-	/*
-	 * public static byte[] decompressData(byte[] data) throws IOException,
-	 * PGPException { JcaPGPObjectFactory objectFactory = new
-	 * JcaPGPObjectFactory(data); Object o = objectFactory.nextObject();
-	 * PGPCompressedData cdata = (PGPCompressedData) o; return
-	 * cdata.getDataStream().readAllBytes(); }
-	 */
+	public static byte[] decompressData(byte[] message) throws IOException, PGPException{
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
+		Object comData = objectFactory.nextObject();
+		PGPCompressedData compressedData = (PGPCompressedData) comData;
+
+		int nRead;
+		byte[] data = new byte[16384];
+
+		while ((nRead = compressedData.getDataStream().read(data, 0, data.length)) != -1) {
+			buffer.write(data, 0, nRead);
+		}
+
+		return buffer.toByteArray();
+		
+		/*JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(data);
+        Object o = objectFactory.nextObject();
+        PGPCompressedData cdata = (PGPCompressedData) o;
+        return cdata.getDataStream().readAllBytes();*/
+	}
 
 	public static byte[] convertToRadix64(byte[] message) throws IOException {
 		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
@@ -62,7 +75,7 @@ public class ZipRadix {
 		return message;
 	}
 
-	public static byte[] radixDeconversion(byte[] message) throws IOException, Exception {
+	public static byte[] radixDeconversion(byte[] message) {
 		ByteArrayInputStream byteInputStream = new ByteArrayInputStream(message);
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
