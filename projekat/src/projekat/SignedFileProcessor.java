@@ -38,7 +38,7 @@ public class SignedFileProcessor {
 		return Streams.readAll(literalData.getInputStream());
 	}
 
-	public boolean verifyFile(byte[] data, User u) throws IOException, PGPException {
+	public String verifyFile(byte[] data, User u) throws IOException, PGPException {
 
 		JcaPGPObjectFactory pgpFact = new JcaPGPObjectFactory(data);
 
@@ -65,12 +65,9 @@ public class SignedFileProcessor {
 		PGPSignatureList p3 = (PGPSignatureList) pgpFact.nextObject();
 
 		if (ops.verify(p3.get(0))) {
-			System.out.println(
-					"verifikovan potpis :" + new String(pubKey.getRawUserIDs().next(), StandardCharsets.UTF_8));
-			return true;
+			return "verifikovan potpis :" + new String(pubKey.getRawUserIDs().next(), StandardCharsets.UTF_8);
 		} else {
-			System.out.println("signature verification failed.");
-			return false;
+			return "provera identiteta neuspesna";
 		}
 	}
 
