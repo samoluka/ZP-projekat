@@ -45,26 +45,10 @@ public class ZipRadix {
 	}
 
 	public static byte[] decompressData(byte[] message) throws IOException, PGPException {
-//		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-//		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
-//		Object comData = objectFactory.nextObject();
-//		PGPCompressedData compressedData = (PGPCompressedData) comData;
-
-//		int nRead;
-//
-//		while ((nRead = compressedData.getInputStream().read(data, 0, data.length)) != -1) {
-//			buffer.write(data, 0, nRead);
-//		}
-//
-//		return buffer.toByteArray();
-
-//		byte[] data = new byte[16384];
-
 		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
 		Object o = objectFactory.nextObject();
 		PGPCompressedData cdata = (PGPCompressedData) o;
 		return Streams.readAll(cdata.getDataStream());
-
 	}
 
 	public static byte[] convertToRadix64(byte[] message) throws IOException {

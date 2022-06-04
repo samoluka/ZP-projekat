@@ -248,7 +248,11 @@ public class CreateMessageGUI extends GUI {
 
 				if (zipCheckBox.isSelected()) {
 					// 2.zipovanje
+					System.out.println("pre zip");
+					System.out.println(new String(msg));
 					msg = ZipRadix.compressMessage(msg);
+					System.out.println("posle zip");
+					System.out.println(new String(msg));
 				}
 
 				if (encryptionCheckBox.isSelected()) {
@@ -272,6 +276,11 @@ public class CreateMessageGUI extends GUI {
 				//byte[] msg2 = ZipRadix.radixDeconversion(msg);
 				//System.out.println("posle dekonverzije");
 				//System.out.println(new String(msg2));
+				
+				
+				byte[] msg2 = ZipRadix.decompressData(msg);
+				System.out.println("posle dekompresije");
+				System.out.println(new String(msg2));
 				showMessage("poruka je uspesno kreirana");
 			} catch (IOException | PGPException e1) {
 				// TODO Auto-generated catch block
