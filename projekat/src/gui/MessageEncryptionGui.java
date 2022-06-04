@@ -19,13 +19,17 @@ import javax.swing.border.EmptyBorder;
 
 import org.bouncycastle.bcpg.SymmetricKeyAlgorithmTags;
 import org.bouncycastle.openpgp.PGPException;
+import org.bouncycastle.openpgp.PGPPrivateKey;
 import org.bouncycastle.openpgp.PGPPublicKey;
+import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.util.Strings;
 
 import projekat.Keys;
 import projekat.MessageEncryption;
+import projekat.SignedFileProcessor;
 import projekat.User;
 import projekat.UserProvider;
+import projekat.ZipRadix;
 import util.KeyFormatter;
 
 public class MessageEncryptionGui extends GUI {
@@ -133,8 +137,17 @@ public class MessageEncryptionGui extends GUI {
 			int alg = ((String) lengthDropDown.getSelectedItem()).equals("3DES") ? SymmetricKeyAlgorithmTags.TRIPLE_DES
 					: SymmetricKeyAlgorithmTags.AES_128;
 			try (FileOutputStream fos = new FileOutputStream(path)) {
-				byte[] encrypted = MessageEncryption.getInstance().encryptMessage(publicEncryptionKeyList.get(keyIndex),
+				long id = 3649143097931425584L; // ID priv kljuca za autentikaciju
+				PGPSecretKey secretKey = ((new Keys()).findPrivateRing(id, u)).getSecretKey();
+				//1.auth
+				byte[] encrypted = (new SignedFileProcessor()).signFile(msg, "123", secretKey);
+				//2.zipovanje
+				encrypted = ZipRadix.compressMessage(encrypted);
+				//3.enkripcija
+				 encrypted = MessageEncryption.getInstance().encryptMessage(publicEncryptionKeyList.get(keyIndex),
 						msg, alg);
+				 //4.radix64
+				 encrypted = ZipRadix.convertToRadix64(encrypted);
 				fos.write(encrypted);
 				showMessage("poruka je uspesno sifrovana");
 			} catch (PGPException | IOException e1) {

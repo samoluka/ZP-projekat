@@ -10,3 +10,5 @@
 
 ///////////
 -promeniti metodu enkripcije da prima byte[] a ne String kako bi ceo proces bio konzistentan
+
+- ukloniti izvoz tudjih javnih kljuceva pri listanju ?
