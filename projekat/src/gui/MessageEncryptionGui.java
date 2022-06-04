@@ -171,7 +171,7 @@ public class MessageEncryptionGui extends GUI {
 			FileDialog fileChooser = new FileDialog(parentFrame);
 			fileChooser.setTitle("odaberite putanju na kojoj ce se sacuvati poruka");
 			fileChooser.setVisible(true);
-			String filename = fileChooser.getDirectory() + fileChooser.getFile() + ".encrypted";
+			String filename = fileChooser.getDirectory() + fileChooser.getFile() + ".asc";
 			outputPath.setText(filename);
 		});
 		back.addActionListener(e -> {
