@@ -23,6 +23,7 @@ import org.bouncycastle.openpgp.PGPSecretKey;
 
 import projekat.Keys;
 import projekat.MessageDecryption;
+import projekat.MessageEncryption;
 import projekat.SignedFileProcessor;
 import projekat.User;
 import projekat.UserProvider;
@@ -87,7 +88,8 @@ public class ReadMessageGUI extends GUI {
 				msg = ZipRadix.radixDeconversion(msg);
 
 				// 2.decrypt
-				msg = MessageDecryption.getInstance().decryptMessage(u, password.getText(), msg);
+				if (MessageEncryption.getInstance().isEncrypted(msg))
+					msg = MessageDecryption.getInstance().decryptMessage(u, password.getText(), msg);
 
 				// 3.unzip
 				if (ZipRadix.checkIfCompressed(msg))
