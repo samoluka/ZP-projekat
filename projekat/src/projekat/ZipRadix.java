@@ -3,7 +3,6 @@ package projekat;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.bouncycastle.bcpg.ArmoredOutputStream;
@@ -14,6 +13,7 @@ import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPObjectFactory;
 import org.bouncycastle.openpgp.PGPUtil;
 import org.bouncycastle.openpgp.jcajce.JcaPGPObjectFactory;
+import org.bouncycastle.util.io.Streams;
 
 public class ZipRadix {
 
@@ -46,9 +46,9 @@ public class ZipRadix {
 
 	public static byte[] decompressData(byte[] message) throws IOException, PGPException {
 		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
-        Object o = objectFactory.nextObject();
-        PGPCompressedData cdata = (PGPCompressedData) o;
-        return cdata.getDataStream().readAllBytes();
+		Object o = objectFactory.nextObject();
+		PGPCompressedData cdata = (PGPCompressedData) o;
+		return Streams.readAll(cdata.getDataStream());
 	}
 
 	public static byte[] convertToRadix64(byte[] message) throws IOException {
@@ -63,19 +63,20 @@ public class ZipRadix {
 	}
 
 	public static byte[] radixDeconversion(byte[] message) throws IOException {
-		
-		  ByteArrayInputStream byteInputStream = new ByteArrayInputStream(message);
-		  ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		  
-		  int nRead; byte[] data = new byte[16384];
-		  
-		  while ((nRead = PGPUtil.getDecoderStream(byteInputStream).read(data, 0, data.length)) != -1) {
-		  buffer.write(data, 0, nRead); }
-		  
-		  return buffer.toByteArray();
-		  }
-		//byte[] dencodeBytes = org.bouncycastle.util.encoders.Base64.decode(message);
-		//return dencodeBytes;
 
+		ByteArrayInputStream byteInputStream = new ByteArrayInputStream(message);
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+		int nRead;
+		byte[] data = new byte[16384];
+
+		while ((nRead = PGPUtil.getDecoderStream(byteInputStream).read(data, 0, data.length)) != -1) {
+			buffer.write(data, 0, nRead);
+		}
+
+		return buffer.toByteArray();
 	}
+	// byte[] dencodeBytes = org.bouncycastle.util.encoders.Base64.decode(message);
+	// return dencodeBytes;
 
+}

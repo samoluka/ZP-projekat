@@ -36,7 +36,7 @@ public class FirstGui extends GUI {
 		JPanel createPanel = new JPanel();
 		createPanel.add(createButton);
 
-		JButton decrypt = new JButton("desifruj poruku");
+		JButton decrypt = new JButton("procitaj poruku");
 		JPanel decryptPanel = new JPanel();
 		decryptPanel.add(decrypt);
 
@@ -94,7 +94,7 @@ public class FirstGui extends GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JButton b = (JButton) e.getSource();
-				((MainGui) getParent()).setInnerPanel((new MessageDecryptionGui(panel, getParent())).getPanel());
+				((MainGui) getParent()).setInnerPanel((new ReadMessageGUI(panel, getParent())).getPanel());
 			}
 		});
 

@@ -1,8 +1,8 @@
 package gui;
 
 import java.awt.FileDialog;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -19,23 +19,26 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import org.bouncycastle.openpgp.PGPException;
+import org.bouncycastle.openpgp.PGPPrivateKey;
 import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 
 import projekat.Keys;
 import projekat.MessageDecryption;
+import projekat.SignedFileProcessor;
 import projekat.User;
 import projekat.UserProvider;
+import projekat.ZipRadix;
 import util.KeyFormatter;
 
-public class MessageDecryptionGui extends GUI {
+public class ReadMessageGUI extends GUI {
 
 	private ArrayList<PGPSecretKey> secretEncryptionKeyList;
 	private ArrayList<PGPSecretKey> secretSigningKeyList;
 	private int keyIndex = 0;
 	private JTextArea KeyInfo;
 
-	public MessageDecryptionGui(JPanel returnPanel, GUI parent) {
+	public ReadMessageGUI(JPanel returnPanel, GUI parent) {
 		setParent(parent);
 		JPanel panel = new JPanel();
 
@@ -109,16 +112,34 @@ public class MessageDecryptionGui extends GUI {
 		JButton back = new JButton("Nazad");
 		encrypt.addActionListener(e -> {
 			String path = inputPath.getText();
-			try {
+			try (FileOutputStream fos = new FileOutputStream("izlaz.txt")) {
 				byte[] msg = Files.readAllBytes(Paths.get(path));
-				byte[] original = MessageDecryption.getInstance().decryptMessage(
-						secretEncryptionKeyList.get(keyIndex).extractPrivateKey(new JcePBESecretKeyDecryptorBuilder()
-								.setProvider("BC").build(password.getText().toCharArray())),
-						msg);
-				String originalMsgString = new String(original, StandardCharsets.UTF_8);
-				System.out.println(originalMsgString);
-				originalMsg.setText(originalMsgString);
-				showMessage("Uspesno desifrovana poruka");
+
+				msg = ZipRadix.radixDeconversion(msg);
+
+				// 1.auth
+
+				// 2.zipovanje
+
+				long KeyId = 1L;
+				PGPSecretKey secretKey = new Keys().findPrivateRing(KeyId, u).getSecretKey();
+				PGPPrivateKey privateKey = secretEncryptionKeyList.get(keyIndex).extractPrivateKey(
+						new JcePBESecretKeyDecryptorBuilder().setProvider("BC").build("luka123".toCharArray()));
+				msg = MessageDecryption.getInstance().decryptMessage(privateKey, msg);
+
+				if (ZipRadix.checkIfCompressed(msg))
+					msg = ZipRadix.decompressData(msg);
+
+				System.out.println(new SignedFileProcessor().verifyFile(msg, u));
+
+				msg = new SignedFileProcessor().unsignedMessage(msg);
+
+				// 3.enkripcija
+
+				// 4.radix64
+
+				fos.write(msg);
+				showMessage("poruka je uspesno procitana");
 			} catch (PGPException | IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
