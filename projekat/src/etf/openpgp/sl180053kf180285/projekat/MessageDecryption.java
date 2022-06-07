@@ -21,6 +21,9 @@ public class MessageDecryption {
 
 	private static MessageDecryption instance = new MessageDecryption();
 
+	/**
+	 * vraca instancu klase MessageDecryption
+	 */
 	public static MessageDecryption getInstance() {
 		return instance;
 	}
@@ -29,6 +32,9 @@ public class MessageDecryption {
 
 	}
 
+	/**
+	 * desifrovanje poruke uz koriscenje odgovarajuceg privatnog kljuca
+	 */
 	public byte[] decryptMessage(User u, String password, byte[] pgpEncryptedData) throws PGPException, IOException {
 		PGPObjectFactory pgpFact = new JcaPGPObjectFactory(pgpEncryptedData);
 		PGPEncryptedDataList encList = (PGPEncryptedDataList) pgpFact.nextObject();

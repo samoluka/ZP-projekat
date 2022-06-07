@@ -30,10 +30,16 @@ public class GenerateRSAKeys {
 
 	private static GenerateRSAKeys instance = new GenerateRSAKeys();
 
+	/**
+	 * vraca instancu klase GenerateRSAKeys
+	 */
 	public static GenerateRSAKeys getInsance() {
 		return instance;
 	}
 
+	/**
+	 * kreira kljuceve duzine parametra keySize
+	 */
 	public Pair<PGPKeyPair, PGPKeyPair> generate(int keySize)
 			throws NoSuchProviderException, PGPException, NoSuchAlgorithmException, IOException {
 
@@ -52,6 +58,9 @@ public class GenerateRSAKeys {
 
 	}
 
+	/**
+	 * dodavanje para kljuceva u prsten i cuvanje u kolekciji trenutno ulogovanog korisnika
+	 */
 	public void addKeyPairToKeyRing(User u, String mail, String password, PGPKeyPair pgpMasterKeyPair,
 			PGPKeyPair pgpKeyPair) throws PGPException {
 		PGPDigestCalculator sha1DigestCalculator = new JcaPGPDigestCalculatorProviderBuilder().build()
@@ -72,6 +81,9 @@ public class GenerateRSAKeys {
 
 	}
 
+	/**
+	 * cuva prstenove korisnika u .asc formatu
+	 */
 	public void saveKeyRingToFile(User user) throws IOException {
 		ArmoredOutputStream aos1 = new ArmoredOutputStream(new FileOutputStream(user.getSecretKeyRingDirectory()));
 		(user.getSecretKeyRingCollection()).encode(aos1);

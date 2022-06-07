@@ -5,6 +5,9 @@ import java.security.NoSuchAlgorithmException;
 
 public class HashText {
 
+	/**
+	 * racuna hes prosledjenog teksta koristeci SHA1 algoritam
+	 */
 	public static String getSHA(String text) {
 		String generatedText = null;
 

@@ -22,14 +22,23 @@ import etf.openpgp.sl180053kf180285.util.Pair;
 
 public class Keys {
 
+	/**
+	 * dohvata kljuceve korisnika
+	 */
 	public Iterator<PGPSecretKeyRing> getSecretRings(User u) {
 		return u.getSecretKeyRingCollection().getKeyRings();
 	}
 
+	/**
+	 * dohvata uvezene javne kljuceve korisnika
+	 */
 	public Iterator<PGPPublicKeyRing> getImportedPublicRings(User u) {
 		return u.getImportedPublicKeyRingCollection().getKeyRings();
 	}
 
+	/**
+	 * dohvata par korisnickih kljuceva po ID kljuca
+	 */
 	public Pair<PGPPublicKey, PGPPublicKey> findPublicRing(long keyID, User u) {
 		Iterator<PGPSecretKeyRing> pkrIterator = getSecretRings(u);
 		int found = 0;
@@ -43,6 +52,9 @@ public class Keys {
 		return null;
 	}
 
+	/**
+	 * dohvata par uvezenih javnih kljuceva korisnika po ID kljuca
+	 */
 	public Pair<PGPPublicKey, PGPPublicKey> findPublicRingWithImported(long keyID, User u) {
 		Iterator<PGPSecretKeyRing> pkrIterator = getSecretRings(u);
 		while (pkrIterator.hasNext()) {
@@ -63,6 +75,9 @@ public class Keys {
 		return null;
 	}
 
+	/**
+	 * dohvata kljuc korisnika po ID kljuca
+	 */
 	public PGPSecretKeyRing findPrivateRing(long keyID, User u) {
 		Iterator<PGPSecretKeyRing> pkrIterator = getSecretRings(u);
 		PGPSecretKeyRing privateKeyRing = null;
@@ -84,6 +99,9 @@ public class Keys {
 		return null;
 	}
 
+	/**
+	 * izvoz izabranog javnog kljuca na zadatu putanju
+	 */
 	public void publicKeyExport(String savePath, long keyID, User u) throws IOException {
 		Pair<PGPPublicKey, PGPPublicKey> publicKeys = findPublicRing(keyID, u);
 		ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
@@ -92,6 +110,9 @@ public class Keys {
 		aos.close();
 	}
 
+	/**
+	 * uvoz izabranog javnog kljuca sa zadate putanje
+	 */
 	public void publicKeyImport(String importPath, User u) throws IOException, PGPException {
 		PGPPublicKeyRingCollection currentPKRC = u.getImportedPublicKeyRingCollection();
 		File currentPKRD = u.getImportedPublicKeyRingDirectory();
@@ -111,6 +132,9 @@ public class Keys {
 		u.setImportedPublicKeyRingCollection(currentPKRC);
 	}
 
+	/**
+	 * izvoz izabranog privatnog kljuca na zadatu putanju
+	 */
 	public void privateKeyExport(String savePath, long keyID, User u) throws IOException {
 		PGPSecretKeyRing privateKeyRing = findPrivateRing(keyID, u);
 		ArmoredOutputStream aos = new ArmoredOutputStream(new FileOutputStream(new File(savePath)));
@@ -118,6 +142,9 @@ public class Keys {
 		aos.close();
 	}
 
+	/**
+	 * uvoz izabranog javnog kljuca sa zadate putanje
+	 */
 	public void secretKeyImport(String importPath, User u) throws IOException, PGPException {
 		PGPSecretKeyRingCollection currentSKRC = UserProvider.getInstance().getCurrentUser()
 				.getSecretKeyRingCollection();
@@ -138,6 +165,9 @@ public class Keys {
 		u.setSecretKeyRingCollection(currentSKRC);
 	}
 
+	/**
+	 * klasa za brisanje para kljuceva, zahteva sifru pod kojom se cuva privatni kljuc
+	 */
 	public boolean deleteSecretKey(long keyID, String password, User user) throws IOException {
 		PGPSecretKeyRingCollection SKRC = user.getSecretKeyRingCollection();
 		PGPSecretKeyRing secretRing = findPrivateRing(keyID, user);

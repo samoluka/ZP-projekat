@@ -20,10 +20,16 @@ public class MessageEncryption {
 	private MessageEncryption() {
 	}
 
+	/**
+	 * vraca instancu klase MessageEncryption
+	 */
 	public static MessageEncryption getInstance() {
 		return instance;
 	}
 
+	/**
+	 * sifrovanje poruke odabranim simetricnim algoritmom, uz koriscenje izabranog javnog kljuca
+	 */
 	public byte[] encryptMessage(PGPPublicKey encryptionKey, byte[] data, int algorithm)
 			throws PGPException, IOException {
 		PGPEncryptedDataGenerator encGen = new PGPEncryptedDataGenerator(new JcePGPDataEncryptorBuilder(algorithm)
@@ -43,6 +49,9 @@ public class MessageEncryption {
 		return encOut.toByteArray();
 	}
 
+	/**
+	 * provera da li je poruka sifrovana, radi eventualnog pozivanja funkcije decryptMessage
+	 */
 	public boolean isEncrypted(byte[] message) {
 		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
 		Object enc = null;

@@ -10,14 +10,23 @@ public class KeyFormatter {
 	private KeyFormatter() {
 	};
 
+	/**
+	 * dohvata instancu KeyFormatter
+	 */
 	public static KeyFormatter getInstance() {
 		return instance;
 	}
 
+	/**
+	 * ispis javnog kljuca 
+	 */
 	public String publicKeyToString(PGPPublicKey p) {
 		return String.format("%s\n%s\n%s", p.getKeyID(), p.getUserIDs().next(), p.getCreationTime());
 	}
 
+	/**
+	 * ispis privatnog kljuca 
+	 */
 	public String secretKeyToString(PGPSecretKey p) {
 		return String.format("%s\n%s\n%s", p.getKeyID(), p.getUserIDs().next(), p.getPublicKey().getCreationTime());
 	}

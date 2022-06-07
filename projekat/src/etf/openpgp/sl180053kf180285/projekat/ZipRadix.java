@@ -17,6 +17,9 @@ import org.bouncycastle.util.io.Streams;
 
 public class ZipRadix {
 
+	/**
+	 * kompresuje prosledjenu poruku u vidu niza bajtova
+	 */
 	public static byte[] compressMessage(byte[] message) throws IOException {
 		PGPCompressedDataGenerator compressedDataGenerator = new PGPCompressedDataGenerator(
 				CompressionAlgorithmTags.ZIP);
@@ -30,6 +33,9 @@ public class ZipRadix {
 		return message;
 	}
 
+	/**
+	 * proverava da li je poruka komprimovana, radi moguceg kasnijeg pozivanja funkcije za dekompresiju
+	 */
 	public static boolean checkIfCompressed(byte[] message) {
 		PGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
 		Object compMess = null;
@@ -44,6 +50,9 @@ public class ZipRadix {
 		return false;
 	}
 
+	/**
+	 * dekompresuje prosledjenu poruku u vidu niza bajtova
+	 */
 	public static byte[] decompressData(byte[] message) throws IOException, PGPException {
 		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
 		Object o = objectFactory.nextObject();
@@ -51,6 +60,9 @@ public class ZipRadix {
 		return Streams.readAll(cdata.getDataStream());
 	}
 
+	/**
+	 * konverzija poruke u radix64 format
+	 */
 	public static byte[] convertToRadix64(byte[] message) throws IOException {
 		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
 		ArmoredOutputStream armoredOutputStream = new ArmoredOutputStream(byteOutputStream);
@@ -62,6 +74,9 @@ public class ZipRadix {
 		// return org.bouncycastle.util.encoders.Base64.encode(message);
 	}
 
+	/**
+	 * dekonverzija poruke iz radix64 formata
+	 */
 	public static byte[] radixDeconversion(byte[] message) throws IOException {
 
 		ByteArrayInputStream byteInputStream = new ByteArrayInputStream(message);

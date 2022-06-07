@@ -13,7 +13,7 @@ import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
 
 public class User {
 	private String username;
-	private String password;
+	private String password;/***/
 
 	private PGPSecretKeyRingCollection secretKeyRingCollection;
 	private PGPPublicKeyRingCollection importedPublicKeyRingCollection;
@@ -21,50 +21,86 @@ public class User {
 	private File secretKeyRingDirectory;
 	private File importedPublicKeyRingDirectory;
 
+	/**
+	 * dohvata direktorijum za cuvanje prstena privatnih kljuceva
+	 */
 	public File getSecretKeyRingDirectory() {
 		return secretKeyRingDirectory;
 	}
 
+	/**
+	 * postavlja direktorijum za cuvanje prstena privatnih kljuceva
+	 */
 	public void setSecretKeyRingDirectory(File secretKeyRingDirectory) {
 		this.secretKeyRingDirectory = secretKeyRingDirectory;
 	}
 
+	/**
+	 * dohvata kolekciju za cuvanje prstena privatnih kljuceva
+	 */
 	public PGPSecretKeyRingCollection getSecretKeyRingCollection() {
 		return secretKeyRingCollection;
 	}
 
+	/**
+	 * postavlja kolekciju za cuvanje prstena privatnih kljuceva
+	 */
 	public void setSecretKeyRingCollection(PGPSecretKeyRingCollection secretKeyRingCollection) {
 		this.secretKeyRingCollection = secretKeyRingCollection;
 	}
 
+	/**
+	 * dohvata kolekciju za cuvanje prstena javnih kljuceva
+	 */
 	public PGPPublicKeyRingCollection getImportedPublicKeyRingCollection() {
 		return importedPublicKeyRingCollection;
 	}
 
+	/**
+	 * postavlja kolekciju za cuvanje prstena javnih kljuceva
+	 */
 	public void setImportedPublicKeyRingCollection(PGPPublicKeyRingCollection importedPublicKeyRingCollection) {
 		this.importedPublicKeyRingCollection = importedPublicKeyRingCollection;
 	}
 
+	/**
+	 * dohvata direktorijum za cuvanje prstena javnih kljuceva
+	 */
 	public File getImportedPublicKeyRingDirectory() {
 		return importedPublicKeyRingDirectory;
 	}
 
+	/**
+	 * postavlja direktorijum za cuvanje prstena javnih kljuceva
+	 */
 	public void setImportedPublicKeyRingDirectory(File importedPublicKeyRingDirectory) {
 		this.importedPublicKeyRingDirectory = importedPublicKeyRingDirectory;
 	}
 
+	/**
+	 * dohvata korisnicko ime
+	 */
 	public String getUsername() {
 		return username;
 	}
 
+	/**
+	 *  postavlja korisnicko ime
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
+	/**
+	 *  dohvata sifru za logovanje
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 *  postavlja sifru za logovanje
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -93,6 +129,9 @@ public class User {
 		}
 	}
 
+	/**
+	 *  ispis korisnika
+	 */
 	@Override
 	public String toString() {
 		return "User [username=" + username + ", password=" + password + "]";

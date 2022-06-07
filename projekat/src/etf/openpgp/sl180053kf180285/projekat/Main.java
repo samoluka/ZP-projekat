@@ -8,6 +8,9 @@ import etf.openpgp.sl180053kf180285.gui.MainGui;
 
 public class Main {
 
+	/**
+	 * pokretanje aplikacije
+	 */
 	public static void main(String[] args) {
 
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); // postavljanje BC provajdera

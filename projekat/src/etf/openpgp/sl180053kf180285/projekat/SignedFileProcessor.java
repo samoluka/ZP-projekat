@@ -27,10 +27,9 @@ import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 import org.bouncycastle.util.io.Streams;
 
 public class SignedFileProcessor {
-	/*
-	 * verify the passed in file as being correctly signed.
+	/**
+	 * vraca poruku u originalnom formatu bez potpisa
 	 */
-
 	public byte[] unsignedMessage(byte[] data) throws IOException {
 		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(data);
 		objectFactory.nextObject();
@@ -38,6 +37,9 @@ public class SignedFileProcessor {
 		return Streams.readAll(literalData.getInputStream());
 	}
 
+	/**
+	 * verifikacija poruke
+	 */
 	public String verifyFile(byte[] data, User u) throws IOException, PGPException {
 
 		JcaPGPObjectFactory pgpFact = new JcaPGPObjectFactory(data);
@@ -71,6 +73,9 @@ public class SignedFileProcessor {
 		}
 	}
 
+	/**
+	 * potpisivanje poruke sa privatnim kljucem, uz koriscenje sifre za isti
+	 */
 	public byte[] signFile(byte[] data, String password, PGPSecretKey secretKey) throws IOException, PGPException {
 		ByteArrayOutputStream bStream = new ByteArrayOutputStream();
 
@@ -121,6 +126,9 @@ public class SignedFileProcessor {
 		return data;
 	}
 
+	/**
+	 * provera da li je poruka potpisana, radi eventualnog pozivanja funkcije unsignedMessage
+	 */
 	public boolean checkIfSigned(byte[] message) throws IOException, PGPException {
 		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);
 		Object o = null;
