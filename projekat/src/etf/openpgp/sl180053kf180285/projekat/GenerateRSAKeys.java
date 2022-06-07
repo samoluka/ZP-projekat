@@ -34,19 +34,17 @@ public class GenerateRSAKeys {
 		return instance;
 	}
 
-	// moze argumenti da se citaju i iz currentUser
 	public Pair<PGPKeyPair, PGPKeyPair> generate(int keySize)
 			throws NoSuchProviderException, PGPException, NoSuchAlgorithmException, IOException {
 
 //		User currentUser = UserProvider.getInstance().getUserByUsername(UserProvider.getCurrentUser()); // dohvatanje trenutnog korisnika
 
-		KeyPairGenerator generatorRSA = KeyPairGenerator.getInstance("RSA", "BC"); // init generatora
+		KeyPairGenerator generatorRSA = KeyPairGenerator.getInstance("RSA", "BC");
 		generatorRSA.initialize(keySize);
 
-		KeyPair masterKeyPair = generatorRSA.generateKeyPair(); // ne znam jos za sta su dva para kljuceva ovde
+		KeyPair masterKeyPair = generatorRSA.generateKeyPair();
 		KeyPair keyPair = generatorRSA.generateKeyPair();
 
-		// kreiranje pgp para kljuceva od java para kljuceva
 		PGPKeyPair pgpMasterKeyPair = new JcaPGPKeyPair(PGPPublicKey.RSA_SIGN, masterKeyPair, new Date());
 		PGPKeyPair pgpKeyPair = new JcaPGPKeyPair(PGPPublicKey.RSA_ENCRYPT, keyPair, new Date());
 
@@ -56,16 +54,8 @@ public class GenerateRSAKeys {
 
 	public void addKeyPairToKeyRing(User u, String mail, String password, PGPKeyPair pgpMasterKeyPair,
 			PGPKeyPair pgpKeyPair) throws PGPException {
-		// za hash(vrv za cuvanje passworda u hashu sha1 u prstenu priv kljuceva)
 		PGPDigestCalculator sha1DigestCalculator = new JcaPGPDigestCalculatorProviderBuilder().build()
 				.get(HashAlgorithmTags.SHA1);
-
-		// za generisanje prstenova javnih i privatnih kljuceva
-		// ovde treba mozda popraviti ovo da se negde cuva hash sifre pa da nema tih
-		// problema za sad je ovako
-
-		// String passHash = user.getPassword().substring(user.getUsername().length() +
-		// 5);
 
 		PGPKeyRingGenerator keyRingGenerator = new PGPKeyRingGenerator(PGPSignature.POSITIVE_CERTIFICATION,
 				pgpMasterKeyPair, u.getUsername() + "#" + mail, sha1DigestCalculator, null, null,
@@ -76,24 +66,16 @@ public class GenerateRSAKeys {
 		keyRingGenerator.addSubKey(pgpKeyPair);
 
 		PGPSecretKeyRing privateKeyRing = keyRingGenerator.generateSecretKeyRing();
-//		PGPPublicKeyRing publicKeyRing = keyRingGenerator.generatePublicKeyRing();
 
 		u.setSecretKeyRingCollection(
 				PGPSecretKeyRingCollection.addSecretKeyRing(u.getSecretKeyRingCollection(), privateKeyRing));
 
-//		user.setPublicKeyRingCollection(
-//				PGPPublicKeyRingCollection.addPublicKeyRing(user.getPublicKeyRingCollection(), publicKeyRing));
 	}
 
 	public void saveKeyRingToFile(User user) throws IOException {
-		// upis u .asc fajl
 		ArmoredOutputStream aos1 = new ArmoredOutputStream(new FileOutputStream(user.getSecretKeyRingDirectory()));
 		(user.getSecretKeyRingCollection()).encode(aos1);
 		aos1.close();
-//
-//		ArmoredOutputStream aos2 = new ArmoredOutputStream(new FileOutputStream(user.getPublicKeyRingDirectory()));
-//		(user.getPublicKeyRingCollection()).encode(aos2);
-//		aos2.close();
 	}
 
 }

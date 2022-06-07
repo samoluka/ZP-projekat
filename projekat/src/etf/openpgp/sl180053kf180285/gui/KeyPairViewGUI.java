@@ -30,7 +30,6 @@ public class KeyPairViewGUI extends GUI {
 
 		User user = UserProvider.getInstance().getCurrentUser();
 
-		// ovo verovatno nije dobro dohvatanje nem pojma
 		PGPSecretKeyRing ring = user.getSecretKeyRingCollection().getKeyRings().next();
 		PGPSecretKey privateKey = ring.getSecretKey();
 		String priv = KeyFormatter.getInstance().secretKeyToString(privateKey);
