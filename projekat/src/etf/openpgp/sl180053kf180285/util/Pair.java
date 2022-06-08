@@ -1,5 +1,12 @@
 package etf.openpgp.sl180053kf180285.util;
 
+/**
+ * Genericka klasa, koristi se za cuvanje para kljuceva.
+ * 
+ * @param <T1>
+ * @param <T2>
+ */
+
 public class Pair<T1, T2> {
 	private T1 first;
 	private T2 second;

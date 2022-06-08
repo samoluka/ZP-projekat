@@ -9,6 +9,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+/**
+ * Singleton klasa, cuva sve korisnike sistema, omogucava kreiranje korisnika i
+ * dohvatanje trenutno ulogovanog korisnika.
+ *
+ */
+
 public class UserProvider {
 
 	private List<User> allUsers = new LinkedList<>();

@@ -3,6 +3,11 @@ package etf.openpgp.sl180053kf180285.projekat;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Racuna hes korisnikove sifre za logovanje, koristi se pri cuvanju korisnika u
+ * fajl users.txt.
+ * 
+ */
 public class HashText {
 
 	/**

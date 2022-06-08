@@ -26,6 +26,14 @@ import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyEncryptorBuilder;
 
 import etf.openpgp.sl180053kf180285.util.Pair;
 
+/**
+ * Klasa realizovana kao Singleton omogucava kreiranje RSA kljuceva duzine 1024,
+ * 2048 ili 4096 bita, dodavanje istih u prsten kljuceva, kao i upis u kljuceva
+ * u fajl dodeljen korisniku.
+ * 
+ *
+ */
+
 public class GenerateRSAKeys {
 
 	private static GenerateRSAKeys instance = new GenerateRSAKeys();
@@ -59,7 +67,8 @@ public class GenerateRSAKeys {
 	}
 
 	/**
-	 * dodavanje para kljuceva u prsten i cuvanje u kolekciji trenutno ulogovanog korisnika
+	 * dodavanje para kljuceva u prsten i cuvanje u kolekciji trenutno ulogovanog
+	 * korisnika
 	 */
 	public void addKeyPairToKeyRing(User u, String mail, String password, PGPKeyPair pgpMasterKeyPair,
 			PGPKeyPair pgpKeyPair) throws PGPException {

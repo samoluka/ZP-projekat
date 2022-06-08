@@ -26,6 +26,13 @@ import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProv
 import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 import org.bouncycastle.util.io.Streams;
 
+/**
+ * 
+ * Omogucava proveru da li je poruka potpisana, potpisivanje i verifikaciju
+ * iste, kao i vracanje u originalni format bez potpisa.
+ *
+ */
+
 public class SignedFileProcessor {
 	/**
 	 * vraca poruku u originalnom formatu bez potpisa
@@ -127,7 +134,8 @@ public class SignedFileProcessor {
 	}
 
 	/**
-	 * provera da li je poruka potpisana, radi eventualnog pozivanja funkcije unsignedMessage
+	 * provera da li je poruka potpisana, radi eventualnog pozivanja funkcije
+	 * unsignedMessage
 	 */
 	public boolean checkIfSigned(byte[] message) throws IOException, PGPException {
 		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);

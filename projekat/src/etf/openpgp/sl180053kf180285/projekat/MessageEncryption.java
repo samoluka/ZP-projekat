@@ -13,6 +13,11 @@ import org.bouncycastle.openpgp.jcajce.JcaPGPObjectFactory;
 import org.bouncycastle.openpgp.operator.jcajce.JcePGPDataEncryptorBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyKeyEncryptionMethodGenerator;
 
+/**
+ * 
+ * Singlton klasa - Sifrovanje poruke odabranim simetricnim algoritmom, kao i
+ * provera da li je ista sifrovana.
+ */
 public class MessageEncryption {
 
 	private static MessageEncryption instance = new MessageEncryption();
@@ -28,7 +33,8 @@ public class MessageEncryption {
 	}
 
 	/**
-	 * sifrovanje poruke odabranim simetricnim algoritmom, uz koriscenje izabranog javnog kljuca
+	 * sifrovanje poruke odabranim simetricnim algoritmom, uz koriscenje izabranog
+	 * javnog kljuca
 	 */
 	public byte[] encryptMessage(PGPPublicKey encryptionKey, byte[] data, int algorithm)
 			throws PGPException, IOException {
@@ -50,7 +56,8 @@ public class MessageEncryption {
 	}
 
 	/**
-	 * provera da li je poruka sifrovana, radi eventualnog pozivanja funkcije decryptMessage
+	 * provera da li je poruka sifrovana, radi eventualnog pozivanja funkcije
+	 * decryptMessage
 	 */
 	public boolean isEncrypted(byte[] message) {
 		JcaPGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);

@@ -15,6 +15,14 @@ import org.bouncycastle.openpgp.PGPUtil;
 import org.bouncycastle.openpgp.jcajce.JcaPGPObjectFactory;
 import org.bouncycastle.util.io.Streams;
 
+/**
+ * 
+ * Usluzna klasa sa statickim metodama koje omogucavaju kompresiju,
+ * dekompresiju, konverziju u radix64, dekonverziju iz radix64, kao i proveru da
+ * li je poruka komprimovana.
+ *
+ */
+
 public class ZipRadix {
 
 	/**
@@ -34,7 +42,8 @@ public class ZipRadix {
 	}
 
 	/**
-	 * proverava da li je poruka komprimovana, radi moguceg kasnijeg pozivanja funkcije za dekompresiju
+	 * proverava da li je poruka komprimovana, radi moguceg kasnijeg pozivanja
+	 * funkcije za dekompresiju
 	 */
 	public static boolean checkIfCompressed(byte[] message) {
 		PGPObjectFactory objectFactory = new JcaPGPObjectFactory(message);

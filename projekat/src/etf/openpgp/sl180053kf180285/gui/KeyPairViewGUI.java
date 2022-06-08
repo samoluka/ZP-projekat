@@ -13,6 +13,7 @@ import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
 
+import etf.openpgp.sl180053kf180285.projekat.Keys;
 import etf.openpgp.sl180053kf180285.projekat.User;
 import etf.openpgp.sl180053kf180285.projekat.UserProvider;
 import etf.openpgp.sl180053kf180285.util.KeyFormatter;
@@ -30,7 +31,7 @@ public class KeyPairViewGUI extends GUI {
 
 		User user = UserProvider.getInstance().getCurrentUser();
 
-		PGPSecretKeyRing ring = user.getSecretKeyRingCollection().getKeyRings().next();
+		PGPSecretKeyRing ring = new Keys().findPrivateRing(pair.getSecond().getKeyID(), user);
 		PGPSecretKey privateKey = ring.getSecretKey();
 		String priv = KeyFormatter.getInstance().secretKeyToString(privateKey);
 		PGPPublicKey publicKey = ring.getPublicKey();

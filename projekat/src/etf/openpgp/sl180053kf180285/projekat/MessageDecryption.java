@@ -17,6 +17,11 @@ import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyDataDecryptorFactoryBuilder;
 import org.bouncycastle.util.io.Streams;
 
+/**
+ * 
+ * 
+ * Singlton klasa - desifrovanje poruke
+ */
 public class MessageDecryption {
 
 	private static MessageDecryption instance = new MessageDecryption();

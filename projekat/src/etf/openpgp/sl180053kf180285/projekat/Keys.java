@@ -20,6 +20,13 @@ import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 
 import etf.openpgp.sl180053kf180285.util.Pair;
 
+/**
+ * Klasa za rad sa kljucevima, ukljucuje uvoz i izvoz javnih i privatnih kljueva
+ * trenutno ulogovanog korisnika, dohvatanje javnih i privatnih kljuceva, kao i
+ * njihovu pretragu po ID.Takodje omogucava brisanje para kljuceva.
+ *
+ */
+
 public class Keys {
 
 	/**
@@ -166,7 +173,8 @@ public class Keys {
 	}
 
 	/**
-	 * klasa za brisanje para kljuceva, zahteva sifru pod kojom se cuva privatni kljuc
+	 * klasa za brisanje para kljuceva, zahteva sifru pod kojom se cuva privatni
+	 * kljuc
 	 */
 	public boolean deleteSecretKey(long keyID, String password, User user) throws IOException {
 		PGPSecretKeyRingCollection SKRC = user.getSecretKeyRingCollection();

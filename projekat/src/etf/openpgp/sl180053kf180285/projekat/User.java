@@ -11,9 +11,15 @@ import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
 import org.bouncycastle.openpgp.PGPSecretKeyRingCollection;
 import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
 
+/**
+ * Klasa koja predstavlja model korisnika sistema.
+ *
+ */
+
 public class User {
 	private String username;
-	private String password;/***/
+	private String password;
+	/***/
 
 	private PGPSecretKeyRingCollection secretKeyRingCollection;
 	private PGPPublicKeyRingCollection importedPublicKeyRingCollection;
@@ -85,21 +91,21 @@ public class User {
 	}
 
 	/**
-	 *  postavlja korisnicko ime
+	 * postavlja korisnicko ime
 	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
 	/**
-	 *  dohvata sifru za logovanje
+	 * dohvata sifru za logovanje
 	 */
 	public String getPassword() {
 		return password;
 	}
 
 	/**
-	 *  postavlja sifru za logovanje
+	 * postavlja sifru za logovanje
 	 */
 	public void setPassword(String password) {
 		this.password = password;
@@ -130,7 +136,7 @@ public class User {
 	}
 
 	/**
-	 *  ispis korisnika
+	 * ispis korisnika
 	 */
 	@Override
 	public String toString() {

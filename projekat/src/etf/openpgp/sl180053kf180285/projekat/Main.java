@@ -6,6 +6,12 @@ import javax.swing.JFrame;
 
 import etf.openpgp.sl180053kf180285.gui.MainGui;
 
+/**
+ * 
+ * 
+ * Sadrzi main metodu kojom se aplikacija pokrece.
+ */
+
 public class Main {
 
 	/**
